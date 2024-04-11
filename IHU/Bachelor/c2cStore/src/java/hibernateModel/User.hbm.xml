@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Dec 16, 2014 10:47:08 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="hibernateModel.User" table="user" catalog="user_store_db" optimistic-lock="version">
+        <id name="id" type="java.lang.Integer">
+            <column name="ID" />
+            <generator class="identity" />
+        </id>
+        <property name="name" type="string">
+            <column name="Name" length="45" not-null="true" />
+        </property>
+        <property name="lastname" type="string">
+            <column name="Lastname" length="45" not-null="true" />
+        </property>
+        <property name="username" type="string">
+            <column name="Username" length="45" not-null="true" />
+        </property>
+        <property name="rank" type="string">
+            <column name="Rank" length="15" not-null="true" />
+        </property>
+        <property name="email" type="string">
+            <column name="Email" length="45" not-null="true" />
+        </property>
+        <property name="secretQ" type="string">
+            <column name="SecretQ" length="120" not-null="true" />
+        </property>
+        <property name="secretA" type="string">
+            <column name="SecretA" length="45" not-null="true" />
+        </property>
+        <property name="password" type="string">
+            <column name="Password" length="45" not-null="true" />
+        </property>
+        <property name="city" type="string">
+            <column name="City" length="45" not-null="true" />
+        </property>
+        <property name="country" type="string">
+            <column name="Country" length="45" not-null="true" />
+        </property>
+        <property name="state" type="string">
+            <column name="State" length="45" not-null="true" />
+        </property>
+        <property name="address" type="string">
+            <column name="Address" length="45" not-null="true" />
+        </property>
+        <property name="postalCode" type="string">
+            <column name="PostalCode" length="45" not-null="true" />
+        </property>
+        <property name="phone" type="string">
+            <column name="Phone" length="11" not-null="true" />
+        </property>
+        <set name="stores" table="store" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="Ownername" not-null="true" />
+            </key>
+            <one-to-many class="hibernateModel.Store" />
+        </set>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,13 @@
+li{
+    display: inline;
+    background-color: dddddd;
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+}
+li:hover{
+    background-color: yellow;
+}
+div{
+    background-color: lightgray;
+    border: 5px solid green;
+}

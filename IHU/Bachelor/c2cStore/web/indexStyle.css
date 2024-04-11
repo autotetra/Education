@@ -1,0 +1,198 @@
+#eshopHeader
+{
+    margin-top: 0cm;
+    text-align: center;
+    color: black;
+    font-size: 60px;
+    text-shadow: 0px 0px 30px #FF0000;
+    font-family: Palatino;
+    color: #888888;
+}
+
+#loginAlert
+{
+    margin-top: -14.5cm;
+    margin-left: 28cm;
+    color: #FF0000;
+    text-shadow: 0px 0px 5px #FF0000;
+}
+
+BODY
+{
+    background-image: url("http://www.blogsnstuff.com/uploads/webpage-background-image.jpg");
+}
+
+#sampleTransBox
+{
+    //border: none;
+    background-color: #888888;
+    color: #FFFFFF;
+    text-shadow: 0px 0px 5px #FF0000;
+    border-bottom-right-radius: 1px;
+    border-top-right-radius: 30px;
+    border-top-left-radius: 1px;
+    border-bottom-left-radius: 30px;
+}
+
+#blueTransBox
+{
+    color: #0000FF;
+    text-shadow: 0px 0px 5px #0000FF;
+    border-radius: 20px;
+    background-color: transparent;
+}
+
+#redTransBox
+{
+    color: #FF0000;
+    text-shadow: 0px 0px 5px #FF0000;
+    border-radius: 20px;
+    background-color: transparent;
+}
+
+#greenTransBox
+{
+    color: #00FF00;
+    text-shadow: 0px 0px 5px #00FF00;
+    border-radius: 20px;
+    background-color: transparent;
+}
+
+#greenLinkLike
+{
+    color: #888888;
+    text-shadow: 0px 0px 5px #888888;
+    font-style: italic;
+    background-color: transparent;
+    border: none;
+}
+
+#greenCategories
+{
+    color: #00FF00;
+    text-shadow: 0px 0px 5px #00FF00;
+    border-radius: 5px;
+    background-color: transparent;
+}
+
+#safeText
+{
+	-webkit-user-select: none;  /* Chrome all / Safari all */
+	-moz-user-select: none;     /* Firefox all */
+	-ms-user-select: none;      /* IE 10+ */
+	-o-user-select: none;
+	user-select: none; 
+}
+
+#styleGenText
+{
+	font-family: Consolas;
+	text-align: center;
+	color: #FFFFFF;
+	padding: 1px;
+}
+
+#signUpTable
+{
+	margin-top: -3.5cm;
+}
+
+#signUpInStyle
+{
+	border-bottom-right-radius: 30px;
+	border-top-right-radius: 30px;
+	border-top-left-radius: 30px;
+	border-bottom-left-radius: 30px;
+	text-align: center;
+	overflow: hidden;
+}
+
+#searchInButton
+{
+    	border-bottom-right-radius: 30px;
+	border-top-right-radius: 1px;
+	border-top-left-radius: 30px;
+	border-bottom-left-radius: 1px;
+        text-align: center;
+}
+
+#transLinkLike
+{
+	background-color: transparent;
+	border: none;
+	color: #888888;
+        text-shadow: 0px 0px 5px #FF0000;
+	font-style: italic;
+}
+
+#inputStyling
+{
+	border-radius: 20px;
+	text-align: center;
+}
+
+#buttonInputStyling
+{
+	border-radius: 20px;
+	text-align: center;
+	background-color: transparent;
+	text-shadow: 0px 0px 5px #888888;
+	color: #888888;
+}
+
+#redInputStyling
+{
+	border-radius: 20px;
+	text-align: center;
+	background-color: transparent;
+	text-shadow: 0px 0px 5px #0000FF;
+	color: #00FF00;
+}
+
+#styleAboutText
+{
+	font-family: "Arial Black", Gadget, sans-serif;
+	text-align: center;
+	color: #FFFFFF;
+	text-shadow: 1px 1px 50px #FF0000;
+	padding: 1px;
+}
+
+#showDB
+{
+	border-collapse: collapse;
+}
+
+#signHeader
+{
+	text-align: center;
+}
+
+#userInfos
+{
+	border-radius: 5px;
+	background-color: transparent;
+	color: #00FF00;
+	box-shadow: 0px 0px 15px #FF0000 inset;
+	font-size: 15px;
+	font-weight: none;
+	border: none;
+}
+
+#signInput
+{
+	border: 0px outset;
+	display: inline-block;
+}
+
+#sampleTable
+{
+	border: 1px solid black;
+	display: inline-block;
+}
+
+#alertTable
+{
+	border: 1px solid red;
+	display: inline-block;
+}

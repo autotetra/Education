@@ -1,0 +1,4 @@
+#myButton {
+    opacity: 0.5; /* You can adjust the opacity to control the level of gray-out effect */
+    cursor: not-allowed; /* Change the cursor to indicate that the button is not clickable */
+  }

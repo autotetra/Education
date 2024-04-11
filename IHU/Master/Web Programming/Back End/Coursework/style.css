@@ -1,0 +1,156 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+#headers, #footer{
+    background-color: #4e98e7;
+    color: #f4f4f4;
+    margin: 0;
+    padding: 10px 0;
+    text-align: center;
+}
+
+#footer button {
+    background-color: #4e98e7;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#footer button:hover {
+    background-color: #367ab3;
+}
+
+#footer a {
+    text-decoration: none;
+    color: #f4f4f4;
+}
+
+#footer button:active {
+    transform: scale(0.98);
+}
+
+#categories{
+    text-align: center;
+}
+
+#categoryButtons{
+    background-color: #4e98e7;
+    color: #f4f4f4;
+    padding: 10px 20px;
+    margin: 10px auto;
+    width: 200px;
+    text-align: center;
+    border: none;
+    border-radius: 5px;
+    display: block;
+    text-decoration: none;
+    transition: background-color 0.3s;
+    cursor: pointer;
+}
+
+#categoryButtons:hover{
+    background-color: #367ab3;
+    
+}
+
+#categoryProductsList {
+    background-color: #ffffff;
+    color: #333; 
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 20px;
+    margin: 10px auto;
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#categoryProductsList p {
+    text-align: left; 
+    margin: 5px 0;
+}
+
+.addToCart{
+    background-color: #4e98e7;
+    color: #f4f4f4;
+    padding: 5px 10px;
+    margin-top: auto;
+    align-self: flex-end;
+    border: none;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+    cursor: pointer;
+}
+
+.addToCart:active {
+    transform: scale(0.98);
+}
+
+.addToCart:hover{
+    background-color: #367ab3;
+    
+}
+
+.cartProducts {
+    background-color: #ffffff;
+    color: #333;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 15px;
+    margin: 10px auto;
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    line-height: 1.5;
+}
+
+.cartProducts form {
+    margin-top: auto;
+    align-self: flex-end;
+}
+
+.removeButton {
+    background-color: #d55858;
+    color: #f4f4f4;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+
+.removeButton:active {
+    transform: scale(0.98);
+}
+
+.removeButton:hover{
+    background-color: #b33645;
+    
+}
+
+#totalPrice{
+    background-color: #d55858;
+    color: #f4f4f4;
+    padding: 15px 10px;
+    border: none;
+    border-radius: 5px;
+    text-align: center;
+}
+
+#emptyCart{
+    text-align: center;
+}
+
+

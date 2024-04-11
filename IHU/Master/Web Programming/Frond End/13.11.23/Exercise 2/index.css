@@ -1,0 +1,29 @@
+.nf{
+    text-align: right;
+    color: blue;
+    width: 5%
+}
+td{
+    width: 100px;
+    border: 1px solid black;
+    padding: 8px;
+}
+th{
+    padding-top: 12px;
+    padding-bottom: 12px;
+    background-color: green;
+    color: white;
+}
+table{
+    width: 100%
+}
+tr{
+    text-align: left;
+    color: green;
+}
+tr:nth-child(odd){
+    background-color: cyan;
+}
+tr:hover {
+    background-color: #ddd;
+}

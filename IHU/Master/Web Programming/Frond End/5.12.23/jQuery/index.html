@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  </head>
+  <body>
+    <style>
+      td.text {
+        color: gray;
+        text-align: center;
+        padding: 2px;
+      }
+    </style>
+    <script>
+      $(document).ready(function () {
+        $.ajax({
+          url: "http://89.47.163.191/actors.php", // try with ages_cors.php
+          async: true, // async false with ages_sleep
+          timeout: 7000, //1000 fail with ages_sleep and no async
+          success: function (response) {
+            for (var i = 0; i < response.length; i++) {
+              var name = response[i].name;
+              var rate = response[i].rating;
+              var objectId = response[i].objectID;
+              document.getElementById("tId").innerHTML +=
+                "<tr><td class='text'><b>" +
+                name +
+                "</b></td><td class='text'>" +
+                rate +
+                "</td><td class='text'>" +
+                objectId +
+                "</td></tr>";
+            }
+          },
+          error: function (xhr, textStatus, errorThrown) {
+            alert("request failed due to " + textStatus);
+          },
+        });
+      });
+    </script>
+    <!-- <input type="text" /> -->
+    <table id="tId" border="1">
+        <th>Name</th><th>Rating</th><th>ID</th></tr>
+    </table>
+  </body>
+  <!-- First study the results of the api and then modify the structure of this snipet
+to create the results dynamically - with "create elements" - expected by Doctor -->
+</html>
