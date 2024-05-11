@@ -11,50 +11,47 @@ import java.net.URL;
 public class WebRequest {
     private String url_to_fetch;
 
-    public WebRequest(String u) {
-        url_to_fetch = u;
+    public WebRequest(String endpoint) {
+        this.url_to_fetch = endpoint;
     }
 
     public String GetResponse() {
-        String response;
+        HttpURLConnection urlConnection = null;
         try {
-            URL url = new URL(url_to_fetch);
-            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            URL url = new URL(this.url_to_fetch);
+            urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setDoOutput(false);
             urlConnection.setRequestMethod("GET");
             urlConnection.connect();
 
-            try {
-                InputStream inputStream;
-                int status = urlConnection.getResponseCode();
+            InputStream inputStream;
+            int status = urlConnection.getResponseCode();
 
-                if (status != HttpURLConnection.HTTP_OK) {
-                    inputStream = urlConnection.getErrorStream();
-                } else {
-                    inputStream = urlConnection.getInputStream();
-                }
-                response = readStream(inputStream);
-            } finally {
+            if (status != HttpURLConnection.HTTP_OK) {
+                inputStream = urlConnection.getErrorStream();
+            } else {
+                inputStream = urlConnection.getInputStream();
+            }
+            return readStream(inputStream);
+        } catch (MalformedURLException e) {
+            Log.e("WebRequest", "Malformed URL Exception", e);
+            return "Malformed URL Exception: " + e.toString();
+        } catch (IOException e) {
+            Log.e("WebRequest", "IOException", e);
+            return "IOException: " + e.toString();
+        } catch (Exception e) {
+            Log.e("WebRequest", "Exception", e);
+            return "Exception: " + e.toString();
+        } finally {
+            if (urlConnection != null) {
                 urlConnection.disconnect();
             }
-        } catch (MalformedURLException e) {
-            response = "Malformed URL Exception: " + e.toString();
-            Log.e("WebRequest", "Malformed URL Exception", e);
-        } catch (IOException e) {
-            response = "IOException: " + e.toString();
-            Log.e("WebRequest", "IOException", e);
-        } catch (Exception e) {
-            response = "Exception: " + e.toString();
-            Log.e("WebRequest", "Exception", e);
         }
-//        Log.d("WebRequest", "Response received: " + response);
-
-        return response;
     }
 
+
     private String readStream(InputStream is) {
-        try {
-            ByteArrayOutputStream bo = new ByteArrayOutputStream();
+        try (ByteArrayOutputStream bo = new ByteArrayOutputStream()) {
             int i = is.read();
             while (i != -1) {
                 bo.write(i);
@@ -66,4 +63,5 @@ public class WebRequest {
             return "";
         }
     }
+
 }

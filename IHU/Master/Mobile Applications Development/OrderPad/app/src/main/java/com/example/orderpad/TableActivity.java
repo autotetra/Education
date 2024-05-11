@@ -63,8 +63,7 @@ public class TableActivity extends AppCompatActivity {
     }
 
     private void fetchTableData() {
-        String personalToken = "2973";
-        String url = "http://mad.mywork.gr/get_coffee_data.php?t=" + personalToken;
+        String url = Constants.GET_COFFEE_DATA_URL;
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
 
@@ -108,7 +107,10 @@ public class TableActivity extends AppCompatActivity {
                         }
 
                         if (id != null && status != null) {
-                            updateButton(buttonIndex, id, status);
+                            final int finalButtonIndex = buttonIndex;
+                            final String finalId = id;
+                            final String finalStatus = status;
+                            runOnUiThread(() -> updateButton(finalButtonIndex, finalId, finalStatus));
                             buttonIndex++;
                         }
                     }
@@ -116,17 +118,20 @@ public class TableActivity extends AppCompatActivity {
                 eventType = parser.next();
             }
         } catch (Exception e) {
-            Toast.makeText(this, "Error parsing XML", Toast.LENGTH_SHORT).show();
-            Log.e("XML Parse Error", "Error parsing XML", e);
+            runOnUiThread(() -> {
+                Toast.makeText(this, "Error parsing XML", Toast.LENGTH_SHORT).show();
+                Log.e("XML Parse Error", "Error parsing XML", e);
+            });
         }
     }
+
 
     private void updateButton(int index, String tableId, String status) {
         int buttonId = getResources().getIdentifier("btnTable" + index, "id", getPackageName());
         Button button = findViewById(buttonId);
         if (button != null) {
-            button.setText("Table " + tableId);
-            button.setBackgroundColor("0".equals(status) ? Color.GREEN : Color.RED);
+            button.setText(tableId);
+            button.setBackgroundColor("0".equals(status) ? Color.parseColor("#00802b") : Color.parseColor("#ff3333"));
             setButtonListeners(button, tableId);
         }
     }
