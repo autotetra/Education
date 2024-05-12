@@ -1,4 +1,21 @@
 <resources>
-    <string name="app_name">OrderPad</string>
-    <string name="loading_table">Loading...</string>
+    <string name="app_name">MADCourse2024</string>
+    <string name="checkbox_label">Remember me</string>
+    <string name="red_key">Red</string>
+    <string name="green_key">Green</string>
+    <string name="blue_key">Blue</string>
+
+    <string-array name="planets_key">
+        <item>Earth</item>
+        <item>Mars</item>
+        <item>Venus</item>
+        <item>Saturn</item>
+    </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="conf_delete">Do you really want to delete this element?</string>
+    <string name="yes_btn">yes</string>
+    <string name="no_btn">no</string>
+    <string name="formatted_date">%1$d-%2$d-%3$d</string>
+    <string name="formatted_time">%1$d : %2$s %3$s</string>
 </resources>

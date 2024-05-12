@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/id_payment"
+        android:icon="@android:drawable/ic_menu_camera"
+        android:title="Payment" >
+        <menu >
+            <item
+                android:id="@+id/id_pay_cash"
+                android:title="Cash" />
+            <item
+                android:id="@+id/id_pay_credit"
+                android:title="Credit Card" />
+        </menu>
+    </item>
+    <item
+        android:id="@+id/id_new_order"
+        android:icon="@android:drawable/ic_menu_upload"
+        android:title="New order"
+        android:visible="true" />
+</menu>
