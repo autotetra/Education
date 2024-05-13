@@ -52,7 +52,7 @@ public class OrderActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.rvProducts);
 
         // Adapter setup
-        adapter = new ProductListAdapter(this, new ArrayList<>(), this::updateTotalOrderValue);
+        adapter = new ProductListAdapter(this, new ArrayList<>(), this::updateTotalOrderValue, true); // Pass true to show buttons
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -66,6 +66,7 @@ public class OrderActivity extends AppCompatActivity {
         // Setup the send order button
         btnSendOrder.setOnClickListener(v -> sendOrder());
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

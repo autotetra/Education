@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class PaymentActivity extends AppCompatActivity {
+public class Backup extends AppCompatActivity {
     private RecyclerView recyclerView;
     private ProductListAdapter adapter;
     private List<Product> productList;
@@ -29,7 +29,6 @@ public class PaymentActivity extends AppCompatActivity {
     private EditText etAmount;
     private ImageButton btnConfirmPayment;
     private String tableId;
-    private double currentBalance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +76,7 @@ public class PaymentActivity extends AppCompatActivity {
     private void fetchOrderDetails() {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
+            //String url = Constants.GET_ORDER_URL + tableId;
             String url = "http://mad.mywork.gr/get_order.php?t=2973&tid=" + tableId;
             Log.d("PaymentActivity", "Fetching order details from URL: " + url); // Log the URL
             WebRequest webRequest = new WebRequest(url);
@@ -145,8 +145,6 @@ public class PaymentActivity extends AppCompatActivity {
                 tvCost.setText("Cost: $" + finalCost);
                 tvPaid.setText("Paid: $" + finalPayment);
                 tvBalance.setText("Balance: $" + finalBalance);
-                currentBalance = Double.parseDouble(finalBalance);
-                etAmount.setHint("Enter amount <= " + finalBalance);
                 updateTotal();
             });
         } catch (Exception e) {
@@ -164,39 +162,6 @@ public class PaymentActivity extends AppCompatActivity {
     }
 
     private void submitPayment() {
-        String amountStr = etAmount.getText().toString().trim();
-        if (amountStr.isEmpty()) {
-            Toast.makeText(this, "Please enter an amount", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        double amount;
-        try {
-            amount = Double.parseDouble(amountStr);
-        } catch (NumberFormatException e) {
-            Toast.makeText(this, "Invalid amount entered", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        if (amount <= 0 || amount > currentBalance) {
-            Toast.makeText(this, "Please enter a valid amount", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        String url = "http://mad.mywork.gr/send_payment.php?t=2973&tid=" + tableId + "&a=" + amount;
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(() -> {
-            WebRequest webRequest = new WebRequest(url);
-            String response = webRequest.GetResponse();
-
-            runOnUiThread(() -> {
-                if (response.contains("<status>6-OK</status>")) {
-                    Toast.makeText(PaymentActivity.this, "Payment successful", Toast.LENGTH_SHORT).show();
-                    finish(); // Close the activity and return to TableActivity
-                } else {
-                    Toast.makeText(PaymentActivity.this, "Payment failed", Toast.LENGTH_SHORT).show();
-                }
-            });
-        });
+        // Implement the logic for submitting payment
     }
 }

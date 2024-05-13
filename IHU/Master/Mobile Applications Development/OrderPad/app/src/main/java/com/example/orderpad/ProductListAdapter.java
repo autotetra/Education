@@ -14,11 +14,13 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
     private Context context;
     private List<Product> productList;
     private Runnable onUpdateTotal;
+    private boolean showQuantityButtons; // New field to control visibility
 
-    public ProductListAdapter(Context context, List<Product> productList, Runnable onUpdateTotal) {
+    public ProductListAdapter(Context context, List<Product> productList, Runnable onUpdateTotal, boolean showQuantityButtons) {
         this.context = context;
         this.productList = productList;
         this.onUpdateTotal = onUpdateTotal;
+        this.showQuantityButtons = showQuantityButtons; // Initialize the new field
     }
 
     @Override
@@ -34,18 +36,26 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
         holder.productPrice.setText(String.format("$%.2f", product.getPrice()));
         holder.productQuantity.setText(String.valueOf(product.getQuantity()));
 
-        holder.btnIncrease.setOnClickListener(v -> {
-            product.incrementQuantity();
-            notifyItemChanged(position);
-            ((OrderActivity) context).updateTotalOrderValue();  // Update total value on activity
-        });
+        // Show or hide the quantity buttons based on the flag
+        if (showQuantityButtons) {
+            holder.btnIncrease.setVisibility(View.VISIBLE);
+            holder.btnDecrease.setVisibility(View.VISIBLE);
 
-        holder.btnDecrease.setOnClickListener(v -> {
-            product.decrementQuantity();
-            notifyItemChanged(position);
-            ((OrderActivity) context).updateTotalOrderValue();  // Update total value on activity
-        });
+            holder.btnIncrease.setOnClickListener(v -> {
+                product.incrementQuantity();
+                notifyItemChanged(position);
+                ((OrderActivity) context).updateTotalOrderValue();  // Update total value on activity
+            });
 
+            holder.btnDecrease.setOnClickListener(v -> {
+                product.decrementQuantity();
+                notifyItemChanged(position);
+                ((OrderActivity) context).updateTotalOrderValue();  // Update total value on activity
+            });
+        } else {
+            holder.btnIncrease.setVisibility(View.GONE);
+            holder.btnDecrease.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -56,13 +66,13 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
     public List<Product> getProductList() {
         return productList;
     }
+
     public void updateData(List<Product> newProducts) {
         productList.clear();
         productList.addAll(newProducts);
         notifyDataSetChanged();
         Log.d("Adapter Update", "Product list updated. Size: " + productList.size());
     }
-
 
     static class ProductViewHolder extends RecyclerView.ViewHolder {
         TextView productName, productPrice, productQuantity;

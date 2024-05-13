@@ -2,10 +2,7 @@ package com.example.orderpad;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 import android.util.Xml;
 import android.view.View;
@@ -15,13 +12,14 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.StringReader;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class TableActivity extends AppCompatActivity {
+    private static final int ORDER_REQUEST = 1;  // Unique request code for starting OrderActivity
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,6 +27,7 @@ public class TableActivity extends AppCompatActivity {
         setupTableButtons();  // Setup buttons first
         fetchTableData();     // Fetch data when activity starts
     }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -36,22 +35,15 @@ public class TableActivity extends AppCompatActivity {
         fetchTableData();
     }
 
-    private static final int ORDER_REQUEST = 1;  // Unique request code for starting OrderActivity
-
     private void setupTableButtons() {
-        int[] buttonIds = new int[] {
+        int[] buttonIds = new int[]{
                 R.id.btnTable1, R.id.btnTable2, R.id.btnTable3,
                 R.id.btnTable4, R.id.btnTable5, R.id.btnTable6,
                 R.id.btnTable7, R.id.btnTable8, R.id.btnTable9
         };
         for (int id : buttonIds) {
             Button tableButton = findViewById(id);
-            tableButton.setOnClickListener(v -> {
-                String tableId = getResources().getResourceEntryName(v.getId()).replace("btnTable", "");
-                Intent intent = new Intent(TableActivity.this, OrderActivity.class);
-                intent.putExtra("table_id", tableId);
-                startActivityForResult(intent, ORDER_REQUEST); // Start OrderActivity expecting a result
-            });
+            // No need to set listeners here, they will be set in updateButton based on table status
         }
     }
 
@@ -75,27 +67,13 @@ public class TableActivity extends AppCompatActivity {
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
     private void fetchTableData() {
         String url = Constants.GET_COFFEE_DATA_URL;
         ExecutorService executor = Executors.newSingleThreadExecutor();
-        Handler handler = new Handler(Looper.getMainLooper());
-
         executor.execute(() -> {
             WebRequest webRequest = new WebRequest(url);
             String result = webRequest.GetResponse();
-            handler.post(() -> {
+            runOnUiThread(() -> {
                 if (result != null && !result.isEmpty()) {
                     parseXMLAndUpdateUI(result);
                 } else {
@@ -104,7 +82,6 @@ public class TableActivity extends AppCompatActivity {
             });
         });
     }
-
 
     private void parseXMLAndUpdateUI(String xmlData) {
         try {
@@ -150,7 +127,6 @@ public class TableActivity extends AppCompatActivity {
         }
     }
 
-
     private void updateButton(int index, String tableId, String status) {
         int buttonId = getResources().getIdentifier("btnTable" + index, "id", getPackageName());
         Button button = findViewById(buttonId);
@@ -161,13 +137,20 @@ public class TableActivity extends AppCompatActivity {
         }
     }
 
-
     private void setButtonListeners(Button button, String tableId, String status) {
+        // We need to track if a long click was detected
+        final boolean[] longClickDetected = {false};
+
         button.setOnClickListener(v -> {
-            // All tables can initiate orders regardless of status.
-            Intent intent = new Intent(TableActivity.this, OrderActivity.class);
-            intent.putExtra("table_id", tableId);
-            startActivity(intent);
+            if (!longClickDetected[0]) {
+                // All tables can initiate orders regardless of status.
+                Intent intent = new Intent(TableActivity.this, OrderActivity.class);
+                intent.putExtra("table_id", tableId);
+                startActivity(intent);
+            } else {
+                // Reset long click detected flag
+                longClickDetected[0] = false;
+            }
         });
 
         button.setOnLongClickListener(v -> {
@@ -176,15 +159,13 @@ public class TableActivity extends AppCompatActivity {
                 Intent intent = new Intent(TableActivity.this, PaymentActivity.class);
                 intent.putExtra("table_id", tableId);
                 startActivity(intent);
+                longClickDetected[0] = true;
+                return true; // Consumes the long click
+            } else {
+                // Mark that a long click was detected but do nothing for green tables
+                longClickDetected[0] = true;
                 return true; // Consumes the long click
             }
-            return false; // Does not consume the long click, allowing other listeners to react
         });
     }
-
-
-
-
-
-
 }
