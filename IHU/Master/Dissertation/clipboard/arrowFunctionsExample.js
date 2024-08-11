@@ -1,22 +1,26 @@
-class Person {
-  constructor(name) {
-    this.name = name;
-  }
+const obj = {
+  value: 42,
+  normalMethod: function () {
+    console.log("normalMethod this: ", this); // 'this' refers to obj
+    console.log("normalMethod this.value: ", this.value); // Logs 42
 
-  printNameArrow() {
-    setTimeout(() => {
-      console.log("Arrow: " + this.name);
-    }, 100);
-  }
+    function innerFunction() {
+      console.log("innerFunction this: ", this); // this refers to the global object
+    }
 
-  printNameFunction() {
-    setTimeout(function () {
-      console.log("Function: " + this.name);
-    });
-  }
-}
+    const innerArrowFunction = () => {
+      console.log("innerArrowFunction this: ", this); // 'this' refers to obj because it inherits from normalMethod
+    };
 
-let person = new Person("Chris");
+    innerFunction();
+    innerArrowFunction();
+  },
 
-person.printNameArrow();
-person.printNameFunction();
+  arrowMethod: () => {
+    console.log("arrowMethod this: ", this); // 'this' refers to the global obj
+    console.log("arrowMethod this.value: ", this.value); // Logs undefined
+  },
+};
+
+obj.normalMethod();
+obj.arrowMethod();
