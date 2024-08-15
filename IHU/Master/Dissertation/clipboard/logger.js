@@ -1,16 +1,18 @@
-import { EventEmitter } from "events";
+//Logger example
+// import { EventEmitter } from "events";
 
-const url = "http://mylogger.io/log";
+// const url = "http://mylogger.io/log";
 
-export class Logger extends EventEmitter {
-  log = (message) => {
-    //Send HTTP request
-    console.log(message);
+// export class Logger extends EventEmitter {
+//   log = (message) => {
+//     //Send HTTP request
+//     console.log(message);
 
-    //Raise an event
-    this.emit("messageLogged", {
-      id: 1,
-      url: "http://",
-    });
-  };
-}
+//     //Raise an event
+//     this.emit("messageLogged", {
+//       id: 1,
+//       url: "http://",
+//     });
+//   };
+// }
+//End of Logger example
