@@ -1,20 +1,12 @@
 import express from "express";
-import bodyParser from "body-parser";
 import path from "path";
+import { fileURLToPath } from "url";
 
-let app = express();
+const app = express();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-let logger = (req, res, next) => {
-  console.log("Logging...");
-  next();
-};
+//setup static folder
+app.use(express.static(path.join(__dirname, "public")));
 
-app.use(logger);
-
-app.get("/", (req, res) => {
-  res.send("Hello World");
-});
-
-app.listen(3000, () => {
-  console.log("Server Started on 3000...");
-});
+app.listen(8000, () => console.log(`Server is running on port 8000`));
