@@ -14,5 +14,7 @@
     "express": "*"
   },
   "author": "Chris",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {},
+  "keywords": []
 }

@@ -1,6 +1,13 @@
+//Database
+let posts = [
+  { id: 1, title: "Post One" },
+  { id: 2, title: "Post Two" },
+  { id: 3, title: "Post Three" },
+];
+
 // @desc Get all posts
 // @route GET /api/posts
-const getPosts = (req, res, next) => {
+export const getPosts = (req, res, next) => {
   const limit = parseInt(req.query.limit);
   if (!isNaN(limit) && limit > 0) {
     return res.status(200).json(posts.slice(0, limit));
@@ -10,7 +17,7 @@ const getPosts = (req, res, next) => {
 
 // @desc Get single post
 // @route GET /api/posts/:id
-const getPost = (req, res, next) => {
+export const getPost = (req, res, next) => {
   const id = parseInt(req.params.id);
   const post = posts.find((post) => post.id === id);
   if (!post) {
@@ -24,7 +31,7 @@ const getPost = (req, res, next) => {
 
 // @desc Create new post
 // @route POST /api/posts
-const createPost = (req, res, next) => {
+export const createPost = (req, res, next) => {
   console.log(req.body);
   const newPost = {
     id: posts.length + 1,
@@ -41,7 +48,7 @@ const createPost = (req, res, next) => {
 
 // @desc Update post
 // @route PUT /api/posts/:id
-const updatePost = (req, res, next) => {
+export const updatePost = (req, res, next) => {
   const id = parseInt(req.params.id);
   const post = posts.find((post) => post.id == id);
   if (!post) {
@@ -55,7 +62,7 @@ const updatePost = (req, res, next) => {
 
 // @desc Delete post
 // @route DELETE /api/posts/:id
-const deletePost = (req, res, next) => {
+export const deletePost = (req, res, next) => {
   const id = parseInt(req.params.id);
   const post = posts.find((post) => post.id == id);
   if (!post) {

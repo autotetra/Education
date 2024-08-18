@@ -5,24 +5,31 @@ import posts from "./routes/posts.js";
 import logger from "./middleware/logger.js";
 import errorHandler from "./middleware/error.js";
 import notFound from "./middleware/notFound.js";
-
 const port = process.env.PORT || 8000;
+
+// Get the directory name
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+//console.log(__dirname);
+
+// Create an express server instance
 const app = express();
 
-//Body parses middleware
+// Body parser middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-//Logger middleware
+// Logger middleware
 app.use(logger);
 
-//setup static folder
-//app.use(express.static(path.join(__dirname, "public")));
+// setup static folder
+app.use(express.static(path.join(__dirname, "public")));
 
+// Routes
 app.use("/api/posts", posts);
-app.use(notFound);
 
-//Error handler
+// Error handler
+app.use(notFound);
 app.use(errorHandler);
 
 app.listen(port, () => console.log(`Server is running on port ${port}`));
