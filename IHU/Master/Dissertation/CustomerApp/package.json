@@ -9,8 +9,9 @@
   },
   "type": "module",
   "dependencies": {
-    "express": "*",
-    "body-parser": "*"
+    "body-parser": "*",
+    "colors": "^1.4.0",
+    "express": "*"
   },
   "author": "Chris",
   "license": "ISC"
