@@ -1,0 +1,15 @@
+db.posts.update({title: 'Post A'},
+{
+    $set: {
+        body: 'updated body',
+        ctegory: 'technology'
+    }
+}
+)
+
+db.posts.update({
+    titile: 'Post A'
+},
+{
+    $inc: {likes: 2}
+})
