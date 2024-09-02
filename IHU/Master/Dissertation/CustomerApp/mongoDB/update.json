@@ -13,3 +13,11 @@ db.posts.update({
 {
     $inc: {likes: 2}
 })
+
+db.posts.updateMany({
+    title: 'Post A'
+},
+{
+    $rename: {likes: "views"}
+})
+

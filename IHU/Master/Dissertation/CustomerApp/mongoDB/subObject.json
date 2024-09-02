@@ -1,0 +1,58 @@
+// This is similar feature to Relation between two database
+// items from a different databases
+
+db.posts.update({title: 'Post B'},
+{
+    $set: {
+        comments: [
+            {
+                user: 'Mary Lee',
+                body: 'Comment One',
+                date: Date()
+            },
+            {
+                user: 'Hary Maker',
+                body: 'Comment Two',
+                date: Date()
+            }
+        ]
+    }
+}
+)
+
+//resul of the above action
+[
+    {
+      _id: ObjectId('66c78c472754a51eb986f18e'),
+      title: 'Post B',
+      body: 'Body of Post 1',
+      category: 'Article',
+      likes: 4,
+      tags: [ 'news', 'events' ],
+      user: { name: 'John Doe', status: 'author' },
+      date: 'Thu Aug 22 2024 22:06:47 GMT+0300 (Eastern European Summer Time)',
+      comments: [
+        {
+          user: 'Mary Lee',
+          body: 'Comment One',
+          date: 'Sun Aug 25 2024 16:22:38 GMT+0300 (Eastern European Summer Time)'
+        },
+        {
+          user: 'Hary Maker',
+          body: 'Comment Two',
+          date: 'Sun Aug 25 2024 16:22:38 GMT+0300 (Eastern European Summer Time)'
+        }
+      ]
+    }
+  ]
+
+
+  //get comments
+ -> prints the post with the comment
+  db.posts.find({
+    comments: {
+        $elemMatch: {
+            user:'Mary Lee'
+        }
+    }
+  })

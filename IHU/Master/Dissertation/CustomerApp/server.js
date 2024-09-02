@@ -10,7 +10,6 @@ const port = process.env.PORT || 8000;
 // Get the directory name
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-//console.log(__dirname);
 
 // Create an express server instance
 const app = express();

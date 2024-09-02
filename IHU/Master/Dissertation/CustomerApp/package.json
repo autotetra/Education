@@ -11,10 +11,10 @@
   "dependencies": {
     "body-parser": "*",
     "colors": "^1.4.0",
-    "express": "*"
+    "express": "*",
+    "mongoose": "^8.5.4"
   },
   "author": "Chris",
   "license": "ISC",
-  "devDependencies": {},
   "keywords": []
 }
