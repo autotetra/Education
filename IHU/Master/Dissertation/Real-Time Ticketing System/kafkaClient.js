@@ -16,7 +16,7 @@ const consumer = kafka.consumer({ groupId: "ticket-group" });
 // Function to connect and start the producer
 export const connectProducer = async () => {
   await producer.connect();
-  console.log("Producer connected");
+  console.log("Producer Connected");
 };
 
 //Function to send messages using the producer
@@ -43,3 +43,10 @@ export const subscribeAndRunConsumer = async (topic) => {
     },
   });
 };
+
+// Subscribe the consumer to the topic and start consuming
+connectConsumer().then(() => {
+  subscribeAndRunConsumer("test-topic").catch((error) =>
+    console.error("Error in consumer:", error)
+  );
+});

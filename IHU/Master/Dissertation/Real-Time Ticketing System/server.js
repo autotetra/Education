@@ -15,8 +15,8 @@ import {
   connectProducer,
   sendMessage,
   connectConsumer,
-  subscribeAdnRunConsumer,
-} from "./kafkaClient.js";
+  subscribeAndRunConsumer,
+} from "./kafkaClient.js"; //Adjust path if necessary
 
 // Setting up __dirname for ES Modules
 const __filename = fileURLToPath(import.meta.url);
@@ -72,4 +72,11 @@ io.on("connection", (socket) => {
 const PORT = process.env.PORT || 8000;
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
+});
+
+// Connect the Kafka producer and send a test message
+connectProducer().then(() => {
+  sendMessage("test-topic", "Hello, this is a test message from the producer!")
+    .then(() => console.log("Test message sent successfully"))
+    .catch((error) => console.error("Error sending test message:", error));
 });
