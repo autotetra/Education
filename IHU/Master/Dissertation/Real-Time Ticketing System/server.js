@@ -10,6 +10,14 @@ import http from "http";
 import path from "path";
 import { fileURLToPath } from "url";
 
+// Import Kafka functions
+import {
+  connectProducer,
+  sendMessage,
+  connectConsumer,
+  subscribeAdnRunConsumer,
+} from "./kafkaClient.js";
+
 // Setting up __dirname for ES Modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
