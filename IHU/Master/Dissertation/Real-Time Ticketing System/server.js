@@ -5,7 +5,7 @@ import express from "express";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import { Server } from "socket.io";
-import http from "http";a
+import http from "http";
 // Serve files from the public directory
 import path from "path";
 import { fileURLToPath } from "url";
