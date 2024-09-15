@@ -3,8 +3,8 @@ import { Kafka } from "kafkajs";
 
 // Create a Kafka client instance
 const kafka = new Kafka({
-  cliendId: "real-time-ticketing-system",
-  brokers: ["localhost: 9092"], //Replace with my Kafka broker address
+  clientId: "real-time-ticketing-system",
+  brokers: ["localhost:9092"], // Corrected broker address
 });
 
 // Create a Kafka producer
