@@ -1,52 +1,53 @@
-// Import Kafka class from KafkaJS
+// kafkaClient.js
 import { Kafka } from "kafkajs";
+import Name from "./models/name.js"; // Importing the Name model
 
-// Create a Kafka client instance
+// Kafka setup
 const kafka = new Kafka({
   clientId: "real-time-ticketing-system",
-  brokers: ["localhost:9092"], // Corrected broker address
+  brokers: ["localhost:9092"],
 });
 
-// Create a Kafka producer
 const producer = kafka.producer();
-
-// Create a Kafka consumer
 const consumer = kafka.consumer({ groupId: "ticket-group" });
 
-// Function to connect and start the producer
+// Connect and run the Kafka producer
 export const connectProducer = async () => {
   await producer.connect();
-  console.log("Producer Connected");
+  console.log("Producer connected");
 };
 
-//Function to send messages using the producer
+// Send message to Kafka
 export const sendMessage = async (topic, message) => {
   await producer.send({
-    topic: topic,
+    topic,
     messages: [{ value: message }],
   });
   console.log(`Message sent to topic ${topic}`);
 };
 
-// Function to connect and start the consumer
+// Connect and run the Kafka consumer
 export const connectConsumer = async () => {
   await consumer.connect();
   console.log("Consumer connected");
 };
 
-// Function to subscribe the consumer to a topic and handle messages
+// Subscribe consumer and process messages
+// Consumer code snippet where you save the data
 export const subscribeAndRunConsumer = async (topic) => {
   await consumer.subscribe({ topic, fromBeginning: true });
   await consumer.run({
     eachMessage: async ({ topic, partition, message }) => {
-      console.log(`Received message: ${message.value.toString()}`);
+      const receivedName = message.value.toString();
+      console.log(`Received message: ${receivedName}`);
+
+      // Save the received name to MongoDB using the correct model
+      try {
+        await Name.create({ name: receivedName });
+        console.log("Name saved to MongoDB successfully");
+      } catch (error) {
+        console.error("Error saving name to MongoDB:", error);
+      }
     },
   });
 };
-
-// Subscribe the consumer to the topic and start consuming
-connectConsumer().then(() => {
-  subscribeAndRunConsumer("test-topic").catch((error) =>
-    console.error("Error in consumer:", error)
-  );
-});

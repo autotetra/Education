@@ -3,33 +3,55 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dev</title>
+    <title>Real-Time Ticketing System</title>
     <script src="/socket.io/socket.io.js"></script>
   </head>
   <body>
-    <h1>WebSocket Test</h1>
-    <button id="sendMessage">Send Message</button>
-    <div id="messages"></div>
+    <h1>Real-Time Ticketing System</h1>
+    <input type="text" id="userName" placeholder="Enter your name" />
+    <button id="submitName">Submit</button>
+    <span id="statusMessage"></span>
+    <br /><br />
+
+    <h2>Submitted Names</h2>
+    <table id="namesTable" border="1">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
 
     <script>
-      // Initialize a connection to the WebSocket server
       const socket = io();
 
-      // Log when connected to the server
-      socket.on("connect", () => {
-        console.log("Connected to WebSocket server");
+      document.getElementById("submitName").addEventListener("click", () => {
+        const name = document.getElementById("userName").value;
+        socket.emit("submitName", name);
+        document.getElementById("userName").value = "";
+        document.getElementById("statusMessage").textContent = "Submitted!";
       });
 
-      // Listen for messages from the server
-      socket.on("message", (msg) => {
-        const messageDiv = document.createElement("div");
-        messageDiv.textContent = `Received : ${msg}`;
-        document.getElementById("messages").appendChild(messageDiv);
+      // Listen for name submissions added to the table
+      socket.on("nameAdded", (name) => {
+        const table = document
+          .getElementById("namesTable")
+          .querySelector("tbody");
+        const row = document.createElement("tr");
+        row.innerHTML = `<td>${name}</td><td><button class="reviewButton">Review</button></td>`;
+        table.appendChild(row);
+
+        // Attach click event to the new review button
+        row.querySelector(".reviewButton").addEventListener("click", () => {
+          socket.emit("reviewName", name);
+        });
       });
 
-      // Send a message to the server when the button is clicked
-      document.getElementById("sendMessage").addEventListener("click", () => {
-        socket.emit("message", "Hello from the client!");
+      // Update the status message when backend completes action
+      socket.on("statusUpdate", (status) => {
+        document.getElementById("statusMessage").textContent = status;
       });
     </script>
   </body>
