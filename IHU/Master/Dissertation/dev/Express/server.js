@@ -2,7 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
-import users from "./data.js";
+import fs from "fs";
 
 dotenv.config();
 
@@ -22,19 +22,14 @@ app.use(express.json());
 
 // Routes
 
-// POST
-//--------------------
 // Create User
-app.get("/user", (req, res) => {
-  res.send(req.query);
-});
+app.post("/user", (req, res) => {});
 
-// GET
-//--------------------
 // Get All Users
-app.get("/users", (req, res) => {
-  res.json(users);
-});
+app.get("/users", (req, res) => {});
+
+// Get a single User
+app.get("/user/:id", (req, res) => {});
 
 // Run Server
 const PORT = process.env.PORT || 8080;
