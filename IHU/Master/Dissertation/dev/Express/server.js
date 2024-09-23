@@ -51,17 +51,14 @@ const deleteUserById = (id) => {
 
 // Routes
 
-// Create User
-app.post("/user", (req, res) => {});
-
 // Get All Users
 app.get("/users", (req, res) => {
   const users = getUsers();
   res.json(users);
 });
 
-// Get a single User
-app.get("/user/:id", (req, res) => {
+// Get User
+app.get("/users/:id", (req, res) => {
   const { id } = req.params;
   const user = getUserById(id);
 
@@ -72,6 +69,39 @@ app.get("/user/:id", (req, res) => {
       message: "User not found",
     });
   }
+});
+
+// Create User
+app.post("/users", (req, res) => {
+  const users = getUsers();
+  const { id, name } = req.body;
+  if (!id || !name) {
+    return res.status(400).json({ message: "ID and Name are required" });
+  }
+  users.push({ id: parseInt(id), name });
+  fs.writeFileSync(
+    path.join(__dirname, "users.json"),
+    JSON.stringify(users, null, 2)
+  );
+  res.status(200).json({ message: "User created", user: { id, name } });
+});
+
+// Update User
+app.put("/users/:id", (req, res) => {
+  const users = getUsers();
+  const { id } = req.params;
+  const { name } = req.body;
+  const userIndex = users.findIndex((user) => user.id === parseInt(id));
+
+  if (userIndex === -1) {
+    return res.status(404).json({ message: "User not found" });
+  }
+  users[userIndex].name = name || users[userIndex].name;
+  fs.writeFileSync(
+    path.join(__dirname, "users.json"),
+    JSON.stringify(users, null, 2)
+  );
+  res.status(200).json({ message: "User updated", user: users[userIndex] });
 });
 
 // Delete User
