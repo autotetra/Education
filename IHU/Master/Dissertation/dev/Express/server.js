@@ -91,6 +91,7 @@ app.put("/users/:id", (req, res) => {
   const users = getUsers();
   const { id } = req.params;
   const { name } = req.body;
+  const indexId = req.body.id;
   const userIndex = users.findIndex((user) => user.id === parseInt(id));
 
   if (userIndex === -1) {
