@@ -1,14 +1,23 @@
 import express from "express";
+import mongoose from "mongoose";
 import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
 import fs from "fs";
+import { error } from "console";
+import User from "./models/user.js";
 
 dotenv.config();
 
 // Setup __dirname for ES Modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// MongoDB Connection
+mongoose
+  .connect(process.env.MONGODB_URI)
+  .then(() => console.log("Connected to MongoDB"))
+  .catch((err) => console.error("Could not connect to MongoDB", err));
 
 const app = express();
 
@@ -20,11 +29,6 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
 
 // Functions
-const getUsers = () => {
-  const data = fs.readFileSync(path.join(__dirname, "users.json"), "utf-8");
-  return JSON.parse(data);
-};
-
 const getUserById = (id) => {
   const users = getUsers();
   return users.find((user) => user.id === parseInt(id));
@@ -52,9 +56,13 @@ const deleteUserById = (id) => {
 // Routes
 
 // Get All Users
-app.get("/users", (req, res) => {
-  const users = getUsers();
-  res.json(users);
+app.get("/users", async (req, res) => {
+  try {
+    const users = await User.find();
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching users" });
+  }
 });
 
 // Get User
