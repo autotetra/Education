@@ -19,44 +19,29 @@ mongoose
   .then(() => console.log("Connected to MongoDB"))
   .catch((err) => console.error("Could not connect to MongoDB", err));
 
+const router = express.Router();
 const app = express();
+
+app.use("/users", router);
 
 // Middlewares
 // Serve the static files from "public" directory
 app.use(express.static(path.join(__dirname, "public")));
 
-// Handle JSON Body Data
+// Global JSON parsing middleware
 app.use(express.json());
+// For form data
+app.use(express.urlencoded({ extended: false }));
 
-// Functions
-const getUserById = (id) => {
-  const users = getUsers();
-  return users.find((user) => user.id === parseInt(id));
-};
-
-const deleteUserById = (id) => {
-  let users = getUsers();
-  const userIndex = users.findIndex((user) => user.id === parseInt(id));
-
-  if (userIndex != -1) {
-    users.splice(userIndex, 1);
-    fs.writeFileSync(
-      path.join(__dirname, "users.json"),
-      JSON.stringify(users, null, 2)
-    );
-    return true;
-  } else {
-    res.status(404).json({
-      message: "User not found",
-    });
-    return false;
-  }
-};
+// Error handling middleware
+app.use((err, req, res, next) => {
+  res.status(500).json({ message: err.message });
+});
 
 // Routes
 
 // Get All Users
-app.get("/users", async (req, res) => {
+router.get("/users", async (req, res) => {
   try {
     const users = await User.find();
     res.json(users);
@@ -66,36 +51,35 @@ app.get("/users", async (req, res) => {
 });
 
 // Get User
-app.get("/users/:id", (req, res) => {
-  const { id } = req.params;
-  const user = getUserById(id);
-
-  if (user) {
+router.get("/users/:id", async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      res.status(404).json({ message: "User not found" });
+    }
     res.json(user);
-  } else {
-    res.status(404).json({
-      message: "User not found",
-    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 });
 
 // Create User
-app.post("/users", (req, res) => {
-  const users = getUsers();
-  const { id, name } = req.body;
-  if (!id || !name) {
-    return res.status(400).json({ message: "ID and Name are required" });
+app.post("/users", async (req, res) => {
+  try {
+    const { name, age } = req.body;
+    const newUser = new User({
+      name,
+      age,
+    });
+    const savedUser = await newUser.save();
+    res.status(201).json(savedUser); // Send back saved user
+  } catch (err) {
+    res.status(400).json({ message: err.message });
   }
-  users.push({ id: parseInt(id), name });
-  fs.writeFileSync(
-    path.join(__dirname, "users.json"),
-    JSON.stringify(users, null, 2)
-  );
-  res.status(200).json({ message: "User created", user: { id, name } });
 });
 
 // Update User
-app.put("/users/:id", (req, res) => {
+router.put("/users/:id", (req, res) => {
   const users = getUsers();
   const { id } = req.params;
   const { name } = req.body;
@@ -114,7 +98,7 @@ app.put("/users/:id", (req, res) => {
 });
 
 // Delete User
-app.delete("/users/:id", (req, res) => {
+router.delete("/users/:id", (req, res) => {
   const { id } = req.params;
   const userDeleted = deleteUserById(id);
   if (userDeleted) {

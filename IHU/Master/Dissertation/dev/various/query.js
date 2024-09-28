@@ -1,0 +1,1 @@
+{  boards(ids: 7520476829) {    items_page(limit: 100) {      items {        id        name        column_values(ids: ["status9__1", "email_1__1"]) {          column {            title          }          text        }      }    }  }}
