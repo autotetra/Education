@@ -19,10 +19,7 @@ mongoose
   .then(() => console.log("Connected to MongoDB"))
   .catch((err) => console.error("Could not connect to MongoDB", err));
 
-const router = express.Router();
 const app = express();
-
-app.use("/users", router);
 
 // Middlewares
 // Serve the static files from "public" directory
@@ -41,7 +38,7 @@ app.use((err, req, res, next) => {
 // Routes
 
 // Get All Users
-router.get("/users", async (req, res) => {
+app.get("/users", async (req, res) => {
   try {
     const users = await User.find();
     res.json(users);
@@ -51,7 +48,7 @@ router.get("/users", async (req, res) => {
 });
 
 // Get User
-router.get("/users/:id", async (req, res) => {
+app.get("/users/:id", async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
     if (!user) {
@@ -79,36 +76,36 @@ app.post("/users", async (req, res) => {
 });
 
 // Update User
-router.put("/users/:id", (req, res) => {
-  const users = getUsers();
-  const { id } = req.params;
-  const { name } = req.body;
-  const indexId = req.body.id;
-  const userIndex = users.findIndex((user) => user.id === parseInt(id));
+app.put("/users/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, age } = req.body;
 
-  if (userIndex === -1) {
-    return res.status(404).json({ message: "User not found" });
-  }
-  users[userIndex].name = name || users[userIndex].name;
-  fs.writeFileSync(
-    path.join(__dirname, "users.json"),
-    JSON.stringify(users, null, 2)
-  );
-  res.status(200).json({ message: "User updated", user: users[userIndex] });
+    const updatedUser = await User.findByIdAndUpdate(
+      id,
+      { name, age },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.status(200).json(updatedUser);
+  } catch (err) {}
 });
 
 // Delete User
-router.delete("/users/:id", (req, res) => {
-  const { id } = req.params;
-  const userDeleted = deleteUserById(id);
-  if (userDeleted) {
-    res.status(200).json({
-      message: "User deleted successfully",
-    });
-  } else {
-    res.status(404).json({
-      message: "User not found.",
-    });
+app.delete("/users/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const userToDelete = await User.findByIdAndDelete(id);
+    if (!userToDelete) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.status(200).json("User deleted successfully");
+  } catch (err) {
+    return res.status(400).json({ message: err.message });
   }
 });
 
