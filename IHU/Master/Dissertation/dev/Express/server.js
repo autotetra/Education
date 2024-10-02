@@ -4,6 +4,8 @@ import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
 import userRoutes from "./routes/users.js";
+import { Server } from "socket.io";
+import http from "http";
 
 dotenv.config();
 
@@ -17,7 +19,27 @@ mongoose
   .then(() => console.log("Connected to MongoDB"))
   .catch((err) => console.error("Could not connect to MongoDB", err));
 
+// Create an express instance
 const app = express();
+
+// Create an HTTP server
+const server = http.createServer(app);
+
+// Setup Websocket server
+const io = new Server(server);
+
+io.on("connection", (socket) => {
+  console.log("A user connection");
+
+  // Listen for a specific event
+  socket.on("message", (msg) => {
+    console.log("Message received:", msg);
+  });
+
+  socket.on("disconnect", (msg) => {
+    console.log("User disconnected");
+  });
+});
 
 // Middlewares
 // Serve the static files from "public" directory
@@ -39,6 +61,6 @@ app.use((err, req, res, next) => {
 // Run Server
 const PORT = process.env.PORT || 8080;
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

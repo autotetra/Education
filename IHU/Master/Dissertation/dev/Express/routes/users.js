@@ -1,6 +1,7 @@
 import express from "express";
 import User from "../models/user.js";
 
+// Create an instance of Router interface
 const router = express.Router();
 
 // Get all users
@@ -32,13 +33,14 @@ router.post("/", async (req, res) => {
     const { name, age } = req.body;
     const newUser = new User({ name, age });
     const savedUser = await newUser.save();
+    res.status(200).json(savedUser);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
 });
 
 // Update user
-router.put("/", async (req, res) => {
+router.put("/:id", async (req, res) => {
   try {
     const { name, age } = req.body;
     const updatedUser = await User.findByIdAndUpdate(
@@ -56,7 +58,7 @@ router.put("/", async (req, res) => {
 });
 
 // Delete user
-router.delete(":id", async (req, res) => {
+router.delete("/:id", async (req, res) => {
   try {
     const userToDelete = await User.findByIdAndDelete(req.params.id);
     if (!userToDelete)
