@@ -3,10 +3,44 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My App</title>
+    <title>WebSocket Test</title>
   </head>
   <body>
-    <p>Hi Christos</p>
-    <p>Server is running</p>
+    <h1>WebSocket Test</h1>
+
+    <!-- Input to send message -->
+    <input type="text" id="messageInput" placeholder="Type a message" />
+    <button onclick="sendMessage()">Send</button>
+
+    <!-- Display received messages -->
+    <div id="messages"></div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      // Initialize WebSocket connection
+      const socket = io();
+
+      // Function to send a message
+      function sendMessage() {
+        const message = document.getElementById("messageInput").value;
+        socket.emit("message", message); // Send message to server
+      }
+
+      // Receive messages from the server
+      socket.on("message", function (msg) {
+        const messageDiv = document.getElementById("messages");
+        messageDiv.innerHTML += `<p>${msg}</p>`;
+      });
+
+      // Listen for connection success
+      socket.on("connect", () => {
+        console.log("Connected to WebSocket server");
+      });
+
+      // Handle disconnection
+      socket.on("disconnect", () => {
+        console.log("Disconnected from WebSocket server");
+      });
+    </script>
   </body>
 </html>

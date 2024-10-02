@@ -34,6 +34,7 @@ io.on("connection", (socket) => {
   // Listen for a specific event
   socket.on("message", (msg) => {
     console.log("Message received:", msg);
+    io.emit("message", msg);
   });
 
   socket.on("disconnect", (msg) => {
