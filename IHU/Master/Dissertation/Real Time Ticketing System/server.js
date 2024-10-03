@@ -26,6 +26,8 @@ const app = express();
 const server = http.createServer(app);
 
 // Setup Websocket server
+/*("message" is the event name, it can be anything, e.g "notifications", 
+it should be same on both client and server side)*/
 const io = new Server(server);
 
 io.on("connection", (socket) => {
