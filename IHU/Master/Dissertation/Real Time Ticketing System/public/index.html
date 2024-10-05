@@ -22,11 +22,13 @@
 
       // Function to send a message
       function sendMessage() {
-        const message = document.getElementById("messageInput").value;
+        const messageInput = document.getElementById("messageInput");
+        const message = messageInput.value;
         socket.emit("message", message); // Send message to server
+        messageInput.value = "";
       }
 
-      // Receive messages from the server
+      // Receive and display messages from the Server
       socket.on("message", function (msg) {
         const messageDiv = document.getElementById("messages");
         messageDiv.innerHTML += `<p>${msg}</p>`;
