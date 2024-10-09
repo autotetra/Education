@@ -36,7 +36,7 @@ io.on("connection", (socket) => {
   // Listen for a specific event
   socket.on("message", (msg) => {
     console.log("Message received:", msg);
-    io.emit("message", msg);
+    io.emit("message", msg); // Send message to client
   });
 
   socket.on("disconnect", (msg) => {
