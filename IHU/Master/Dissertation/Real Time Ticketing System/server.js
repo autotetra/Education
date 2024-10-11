@@ -3,9 +3,9 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
-import userRoutes from "./routes/users.js";
-import { Server } from "socket.io";
+import ticketRoutes from "./routes/tickets.js";
 import http from "http";
+import { initializeWebSocket } from "./services/socket.js";
 
 dotenv.config();
 
@@ -25,24 +25,7 @@ const app = express();
 // Create an HTTP server
 const server = http.createServer(app);
 
-// Setup Websocket server
-/*("message" is the event name, it can be anything, e.g "notifications", 
-it should be same on both client and server side)*/
-const io = new Server(server);
-
-io.on("connection", (socket) => {
-  console.log("A user connection");
-
-  // Listen for a specific event
-  socket.on("message", (msg) => {
-    console.log("Message received:", msg);
-    io.emit("message", msg); // Send message to client
-  });
-
-  socket.on("disconnect", (msg) => {
-    console.log("User disconnected");
-  });
-});
+const io = initializeWebSocket(server);
 
 // Middlewares
 // Serve the static files from "public" directory
@@ -54,7 +37,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 // Use the user routes
-app.use("/users", userRoutes);
+app.use("/tickets", ticketRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

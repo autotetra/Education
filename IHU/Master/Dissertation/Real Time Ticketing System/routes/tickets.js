@@ -4,7 +4,7 @@ import User from "../models/user.js";
 // Create an instance of Router interface
 const router = express.Router();
 
-// Get all users
+// Get all tickets
 router.get("/", async (req, res) => {
   try {
     const users = await User.find();
@@ -14,12 +14,12 @@ router.get("/", async (req, res) => {
   }
 });
 
-// Get user by id
+// Get ticket by id
 router.get("/:id", async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
+    const ticket = await User.findById(req.params.id);
     if (!user) {
-      res.status(404).json({ message: "User not found" });
+      res.status(404).json({ message: "Ticket not found" });
     }
     res.status(200).json(user);
   } catch (err) {
