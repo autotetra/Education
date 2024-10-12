@@ -1,5 +1,5 @@
 import express from "express";
-import User from "../models/user.js";
+import User from "../models/ticket.js";
 
 // Create an instance of Router interface
 const router = express.Router();
