@@ -1,5 +1,5 @@
 import express from "express";
-import User from "../models/ticket.js";
+import Ticket from "../models/ticket.js";
 
 // Create an instance of Router interface
 const router = express.Router();
@@ -7,8 +7,8 @@ const router = express.Router();
 // Get all tickets
 router.get("/", async (req, res) => {
   try {
-    const users = await User.find();
-    res.status(200).json(users);
+    const tickets = await Ticket.find();
+    res.status(200).json(tickets);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -17,53 +17,53 @@ router.get("/", async (req, res) => {
 // Get ticket by id
 router.get("/:id", async (req, res) => {
   try {
-    const ticket = await User.findById(req.params.id);
-    if (!user) {
+    const ticket = await Ticket.findById(req.params.id);
+    if (!ticket) {
       res.status(404).json({ message: "Ticket not found" });
     }
-    res.status(200).json(user);
+    res.status(200).json(ticket);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 });
 
-// Create new user
+// Create new ticket
 router.post("/", async (req, res) => {
   try {
     const { name, age } = req.body;
-    const newUser = new User({ name, age });
-    const savedUser = await newUser.save();
-    res.status(200).json(savedUser);
+    const newTicket = new Ticket({ name, age });
+    const savedTicket = await newTicket.save();
+    res.status(200).json(savedTicket);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
 });
 
-// Update user
+// Update ticket
 router.put("/:id", async (req, res) => {
   try {
     const { name, age } = req.body;
-    const updatedUser = await User.findByIdAndUpdate(
+    const updatedTicket = await Ticket.findByIdAndUpdate(
       req.params.id,
       { name, age },
       { new: true }
     );
-    if (!updatedUser) {
-      res.status(404).json({ message: "User not found" });
+    if (!updatedTicket) {
+      res.status(404).json({ message: "Ticket not found" });
     }
-    res.status(200).json({ updatedUser });
+    res.status(200).json({ updatedTicket });
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
 });
 
-// Delete user
+// Delete ticket
 router.delete("/:id", async (req, res) => {
   try {
-    const userToDelete = await User.findByIdAndDelete(req.params.id);
-    if (!userToDelete)
-      return res.status(404).json({ message: "User not found" });
-    res.status(200).json("User deleted successfully");
+    const ticketToDelete = await Ticket.findByIdAndDelete(req.params.id);
+    if (!ticketToDelete)
+      return res.status(404).json({ message: "Ticket not found" });
+    res.status(200).json("Ticket deleted successfully");
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
