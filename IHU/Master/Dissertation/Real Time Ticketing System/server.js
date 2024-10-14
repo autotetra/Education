@@ -6,6 +6,8 @@ import { fileURLToPath } from "url";
 import ticketRoutes from "./routes/tickets.js";
 import http from "http";
 import { initializeWebSocket } from "./services/socket.js";
+import { connectProducer, sendMessage } from "./services/kafkaProducer.js";
+import { connectConsumer, consumeMessages } from "./services/kafkaConsumer.js";
 
 dotenv.config();
 
@@ -47,6 +49,25 @@ app.use((err, req, res, next) => {
 // Run Server
 const PORT = process.env.PORT || 8080;
 
-server.listen(PORT, () => {
+server.listen(PORT, async () => {
   console.log(`Server is running on port ${PORT}`);
+  //Connect the producer
+  await connectProducer();
+
+  // Connect the consumer
+  await connectConsumer();
+
+  //Start consuming messages from a topic
+  consumeMessages("Topic-D1");
+});
+
+// Example endpoint to send a message
+app.post("/send-message", async (req, res) => {
+  const { topic, message } = req.body;
+  try {
+    await sendMessage(topic, message);
+    res.status(200).send("Message sent!");
+  } catch (error) {
+    res.status(500).send("Failed to send message");
+  }
 });
