@@ -1,4 +1,5 @@
 import { Kafka } from "kafkajs";
+import Ticket from "../models/ticket.js";
 
 // Initialize Kafka
 const kafka = new Kafka({
@@ -22,9 +23,19 @@ const consumeMessages = async (topic) => {
     eachMessage: async ({ message }) => {
       console.log(`Received message: ${message.value.toString()}`);
       //Message processing logic here:
-      // e.g store a ticket to MongoDB
+      const ticketData = JSON.parse(message.value.toString());
+
+      // Create a new ticket document based on the message data
+      const newTicket = new Ticket({
+        title: ticketData.title,
+        description: ticketData.description,
+        status: ticketData.status,
+      });
+
+      // Save ticket to MongoDB
+      await newTicket.save();
+      console.log("Ticket saved to MongoDB");
     },
   });
 };
-
 export { connectConsumer, consumeMessages };

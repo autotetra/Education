@@ -38,7 +38,7 @@ app.use(express.json());
 // For form data
 app.use(express.urlencoded({ extended: false }));
 
-// Use the user routes
+// Use the tickets routes
 app.use("/tickets", ticketRoutes);
 
 // Error handling middleware
@@ -58,7 +58,7 @@ server.listen(PORT, async () => {
   await connectConsumer();
 
   //Start consuming messages from a topic
-  consumeMessages("Topic-D1");
+  await consumeMessages("new-ticket");
 });
 
 // Example endpoint to send a message

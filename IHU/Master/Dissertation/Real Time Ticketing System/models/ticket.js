@@ -1,13 +1,19 @@
 import mongoose from "mongoose";
 
 const ticketSchema = mongoose.Schema({
-  name: {
+  title: {
+    type: String,
+    required: true,
+  },
+  description: {
     type: String,
     required: true,
   },
   status: {
     type: String,
     required: true,
+    default: "Waiting", // Default status
+    enum: ["Waiting", "In-Progress", "Closed"], // Available options
   },
 });
 
