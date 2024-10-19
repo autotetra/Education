@@ -5,16 +5,6 @@ import { sendMessage } from "../services/kafkaProducer.js";
 // Create an instance of Router interface
 const router = express.Router();
 
-// Get all tickets
-router.get("/", async (req, res) => {
-  try {
-    const tickets = await Ticket.find();
-    res.status(200).json(tickets);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
-
 // Create new ticket
 router.post("/create", async (req, res) => {
   try {
@@ -34,6 +24,16 @@ router.post("/create", async (req, res) => {
   }
 });
 
+// Get all tickets
+router.get("/", async (req, res) => {
+  try {
+    const tickets = await Ticket.find();
+    res.status(200).json(tickets);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 // Get ticket by id
 router.get("/:id", async (req, res) => {
   try {
@@ -50,10 +50,10 @@ router.get("/:id", async (req, res) => {
 // Update ticket
 router.put("/:id", async (req, res) => {
   try {
-    const { name, age } = req.body;
+    const { title, description } = req.body;
     const updatedTicket = await Ticket.findByIdAndUpdate(
       req.params.id,
-      { name, age },
+      { title, description },
       { new: true }
     );
     if (!updatedTicket) {
