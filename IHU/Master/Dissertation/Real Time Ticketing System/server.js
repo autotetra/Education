@@ -60,14 +60,3 @@ server.listen(PORT, async () => {
   //Start consuming messages from a topic
   await consumeMessages("new-ticket");
 });
-
-// Example endpoint to send a message
-app.post("/send-message", async (req, res) => {
-  const { topic, message } = req.body;
-  try {
-    await sendMessage(topic, message);
-    res.status(200).send("Message sent!");
-  } catch (error) {
-    res.status(500).send("Failed to send message");
-  }
-});
