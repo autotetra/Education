@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+// Define Ticket Schema
 const ticketSchema = mongoose.Schema({
   title: {
     type: String,
