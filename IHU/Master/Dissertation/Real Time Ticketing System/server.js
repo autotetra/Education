@@ -8,6 +8,7 @@ import http from "http";
 import { initializeWebSocket } from "./services/socket.js";
 import { connectProducer, sendMessage } from "./services/kafkaProducer.js";
 import { connectConsumer, consumeMessages } from "./services/kafkaConsumer.js";
+import authRoute from "./routes/authRoute.js";
 
 dotenv.config();
 
@@ -40,6 +41,9 @@ app.use(express.urlencoded({ extended: false }));
 
 // Use the tickets routes
 app.use("/tickets", ticketRoutes);
+
+// Use the auth routes for authentication
+app.use("/api/auth", authRoute);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

@@ -1,5 +1,6 @@
 import { Server } from "socket.io";
 
+// Initialize connection
 export const initializeWebSocket = (server) => {
   const io = new Server(server);
 
