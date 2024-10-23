@@ -34,6 +34,7 @@ const registerUser = async (req, res) => {
 
     // Save user to the database
     const savedUser = await newUser.save();
+    console.log("User saved to database");
 
     // Generate a JWT token using the helper function
     const token = generateToken(savedUser);
@@ -61,7 +62,7 @@ const loginUser = async (req, res) => {
     // Compare passwords using the helper function
     const isMatch = await comparePasswords(password, existingUser.password);
     if (!isMatch) {
-      return res.status(400).json({ message: "Invalid credentials" });
+      return res.status(400).json({ message: "Incorrect Password" });
     }
 
     // Generate a JWT token using the helper function

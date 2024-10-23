@@ -1,5 +1,5 @@
 import express from "express";
-import Ticket from "../models/ticket.js";
+import Ticket from "../models/ticketModel.js";
 import { sendMessage } from "../services/kafkaProducer.js";
 
 // Create an instance of Router interface

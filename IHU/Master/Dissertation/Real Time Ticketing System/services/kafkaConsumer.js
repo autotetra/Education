@@ -1,5 +1,5 @@
 import { Kafka } from "kafkajs";
-import Ticket from "../models/ticket.js";
+import Ticket from "../models/ticketModel.js";
 
 // Initialize Kafka
 const kafka = new Kafka({

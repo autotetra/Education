@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
-import ticketRoutes from "./routes/tickets.js";
+import ticketRoutes from "./routes/ticketRoute.js";
 import http from "http";
 import { initializeWebSocket } from "./services/socket.js";
 import { connectProducer, sendMessage } from "./services/kafkaProducer.js";
