@@ -1,13 +1,25 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import User from "../models/user.js";
+import User from "../models/userModel.js";
+
+// Helper function to generate JWT token
+const generateToken = (user) => {
+  return jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, {
+    expiresIn: "1h",
+  });
+};
+
+// Helper function to compare passwords
+const comparePasswords = async (candidatePassword, userPassword) => {
+  return await bcrypt.compare(candidatePassword, userPassword);
+};
 
 // Registration controller function
-export const registerUser = async (req, res) => {
+const registerUser = async (req, res) => {
   const { username, email, password } = req.body;
 
   try {
-    // Check if the user already exist
+    // Check if the user exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
@@ -23,12 +35,8 @@ export const registerUser = async (req, res) => {
     // Save user to the database
     const savedUser = await newUser.save();
 
-    // Generate a JWT token
-    const token = jwt.sign(
-      { id: savedUser._id, email: savedUser.email },
-      process.env.JWT_SECRET,
-      { expiresIn: "1h" }
-    );
+    // Generate a JWT token using the helper function
+    const token = generateToken(savedUser);
 
     // Send the response with the user and the token
     res.status(201).json({ user: savedUser, token });
@@ -39,3 +47,33 @@ export const registerUser = async (req, res) => {
       .json({ message: "Something went wrong during registration" });
   }
 };
+
+// Login controller function
+const loginUser = async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    // Check if the user exists
+    const existingUser = await User.findOne({ email });
+    if (!existingUser) {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
+
+    // Compare passwords using the helper function
+    const isMatch = await comparePasswords(password, existingUser.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
+
+    // Generate a JWT token using the helper function
+    const token = generateToken(existingUser);
+
+    // Send the response with the user and the token
+    res.status(200).json({ user: existingUser, token });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Something went wrong during login" });
+  }
+};
+
+// Export the functions
+export { registerUser, loginUser };
