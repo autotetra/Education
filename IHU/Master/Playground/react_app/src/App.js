@@ -1,15 +1,18 @@
-import React from "react";
-import Greeting from "./Greeting"; // Import the Greeting component
+import React, { useState } from "react";
+import Counter from "./Counter";
+import ControlButtons from "./ControlButtons";
 
 function App() {
+  const [count, setCount] = useState(0);
+
+  const increment = () => setCount(count + 1);
+  const decrement = () => setCount(count - 1);
+
   return (
     <div>
-      <h1>Welcome to Your Simple React App!</h1>
-      <p>Let's learn React step-by-step.</p>
-
-      {/* Use the Greeting component with a prop */}
-      <Greeting name="John" />
-      <Greeting name="Jane" />
+      <h2>Simple Counter App</h2>
+      <Counter count={count} />
+      <ControlButtons onIncrement={increment} onDecrement={decrement} />
     </div>
   );
 }
