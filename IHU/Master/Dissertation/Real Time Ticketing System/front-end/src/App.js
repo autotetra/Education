@@ -1,8 +1,12 @@
+import React from "react";
+import Login from "./Login";
+import Register from "./Register";
+
 function App() {
   return (
     <div>
-      <h3>React App</h3>
-      <p>Hello Christos!</p>
+      <Login />
+      <Register />
     </div>
   );
 }
