@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import axios from "axios";
+import endpoints from "./api/endpoints.js";
 
 function Register() {
   const [username, setUserName] = useState("");
@@ -7,10 +9,17 @@ function Register() {
 
   const handleRegister = (e) => {
     e.preventDefault();
-    // Logic for handling register submission (to be implemented later)
-    console.log("Username: ", username);
-    console.log("Email: ", email);
-    console.log("Password: ", password);
+    axios
+      .post(endpoints.REGISTER, {
+        email: email,
+        password: password,
+      })
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.log("Error logging in:", error);
+      });
   };
 
   return (

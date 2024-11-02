@@ -40,7 +40,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 // Use the tickets routes
-app.use("/tickets", ticketRoutes);
+app.use("api/tickets", ticketRoutes);
 
 // Use the auth routes for authentication
 app.use("/api/auth", authRoute);
