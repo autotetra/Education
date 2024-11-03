@@ -11,6 +11,7 @@ function Register() {
     e.preventDefault();
     axios
       .post(endpoints.REGISTER, {
+        username: username,
         email: email,
         password: password,
       })

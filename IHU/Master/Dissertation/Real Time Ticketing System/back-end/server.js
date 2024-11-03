@@ -9,6 +9,7 @@ import { initializeWebSocket } from "./services/socket.js";
 import { connectProducer, sendMessage } from "./services/kafkaProducer.js";
 import { connectConsumer, consumeMessages } from "./services/kafkaConsumer.js";
 import authRoute from "./routes/authRoute.js";
+import cors from "cors";
 
 dotenv.config();
 
@@ -38,6 +39,15 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
 // For form data
 app.use(express.urlencoded({ extended: false }));
+
+// Middleware for Cross-Origin Resource Sharing
+app.use(
+  cors({
+    origin: "http://localhost:3000", // Define front-end URL
+    methods: "GET, POST", // Allowed Methods
+    credentials: true, // Enable cookies/auth headers
+  })
+);
 
 // Use the tickets routes
 app.use("api/tickets", ticketRoutes);
