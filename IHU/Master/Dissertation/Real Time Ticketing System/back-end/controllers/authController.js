@@ -36,11 +36,8 @@ const registerUser = async (req, res) => {
     const savedUser = await newUser.save();
     console.log("User saved to database");
 
-    // Generate a JWT token using the helper function
-    const token = generateToken(savedUser);
-
-    // Send the response with the user and the token
-    res.status(201).json({ user: savedUser, token });
+    // Send the response with the user data only
+    res.status(201).json({ user: savedUser });
   } catch (error) {
     console.error(error);
     res
