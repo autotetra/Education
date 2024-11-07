@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import axios from "axios";
-import endpoints from "./api/endpoints.js";
+import endpoints from "../api/endpoints.js";
+import { useNavigate } from "react-router-dom";
 
 function Register() {
   const [username, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate(); // Initialize navigate
 
   const handleRegister = (e) => {
     e.preventDefault();
@@ -17,9 +19,14 @@ function Register() {
       })
       .then((response) => {
         console.log(response.data);
+        navigate("/dashboard"); // Redirect user to the dashboard page
       })
       .catch((error) => {
-        console.log("Error logging in:", error);
+        if (error.response && error.response.data.message) {
+          console.error("Registration error:", error.response.data.message);
+        } else {
+          console.error("An error occurred:", error.message);
+        }
       });
   };
 
