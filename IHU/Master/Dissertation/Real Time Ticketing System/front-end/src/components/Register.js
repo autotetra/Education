@@ -18,8 +18,10 @@ function Register() {
         password: password,
       })
       .then((response) => {
-        console.log(response.data);
-        navigate("/dashboard"); // Redirect user to the dashboard page
+        console.log("Registration successful:", response.data);
+        const token = response.data.token; // Get the token from response
+        localStorage.setItem("token", token); // Store the token
+        navigate("/"); // Redirect to the dashboard
       })
       .catch((error) => {
         if (error.response && error.response.data.message) {

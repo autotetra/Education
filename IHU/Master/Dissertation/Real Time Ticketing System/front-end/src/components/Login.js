@@ -26,7 +26,7 @@ function Login() {
       .then((response) => {
         console.log("Login successful:", response.data); // Loge the response data
         const token = response.data.token; // Get the token from response
-        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("token", token);
         navigate("/dashboard"); // Redirect user to the dashboard page
       })
       .catch((error) => {
