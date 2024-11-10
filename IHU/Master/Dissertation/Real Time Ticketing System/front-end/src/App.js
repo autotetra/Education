@@ -1,8 +1,10 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Home from "./components/Home";
-import Dashboard from "./components/Dashboard";
+import Home from "./components/Homepage";
 import UserRoute from "./components/UserRoute";
+import Dashboard from "./components/Dashboard";
+import AdminRoute from "./components/AdminRoute";
+import AdminDashboard from "./components/AdminDashboard";
 
 function App() {
   return (
@@ -12,9 +14,17 @@ function App() {
         <Route
           path="/dashboard"
           element={
-            <DashboardProtectedRoute>
+            <UserRoute>
               <Dashboard />
-            </DashboardProtectedRoute>
+            </UserRoute>
+          }
+        />
+        <Route
+          path="/admin-dashboard"
+          element={
+            <AdminRoute>
+              <AdminDashboard />
+            </AdminRoute>
           }
         />
       </Routes>

@@ -13,8 +13,13 @@ const ticketSchema = mongoose.Schema({
   status: {
     type: String,
     required: true,
-    default: "Waiting", // Default status
     enum: ["Waiting", "In-Progress", "Closed"], // Available options
+    default: "Waiting", // Default status
+  },
+  category: {
+    type: String,
+    enum: ["Technical Support", "General Inquiry", "Sales"],
+    required: true,
   },
 });
 
