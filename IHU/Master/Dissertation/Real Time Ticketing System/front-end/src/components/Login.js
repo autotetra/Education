@@ -24,10 +24,15 @@ function Login() {
         password: password,
       })
       .then((response) => {
-        console.log("Login successful:", response.data); // Loge the response data
-        const token = response.data.token; // Get the token from response
+        console.log("Login successful:", response.data); // Log the response data
+        const { token, user } = response.data;
         localStorage.setItem("token", token);
-        navigate("/dashboard"); // Redirect user to the dashboard page
+        localStorage.setItem("role", user.role);
+        if (user.role === "admin") {
+          navigate("/admin-dashboard");
+        } else {
+          navigate("/dashboard");
+        }
       })
       .catch((error) => {
         if (
