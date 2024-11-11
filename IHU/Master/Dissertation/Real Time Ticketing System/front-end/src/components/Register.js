@@ -19,8 +19,6 @@ function Register() {
       })
       .then((response) => {
         console.log("Registration successful:", response.data);
-        const token = response.data.token; // Get the token from response
-        localStorage.setItem("token", token); // Store the token
         navigate("/"); // Redirect to the dashboard
       })
       .catch((error) => {

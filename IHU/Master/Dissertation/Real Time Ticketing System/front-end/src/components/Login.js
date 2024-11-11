@@ -11,7 +11,7 @@ function Login() {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
-      console.log("User is already logged in");
+      console.log("Account is already logged in");
       // Navigate to a protected page or perform some other action
     }
   }, []);
@@ -25,13 +25,15 @@ function Login() {
       })
       .then((response) => {
         console.log("Login successful:", response.data); // Log the response data
-        const { token, user } = response.data;
+        const { token, account } = response.data;
         localStorage.setItem("token", token);
-        localStorage.setItem("role", user.role);
-        if (user.role === "admin") {
+        localStorage.setItem("role", account.role);
+        if (account.role === "admin") {
           navigate("/admin-dashboard");
-        } else {
-          navigate("/dashboard");
+        } else if (account.role === "user") {
+          navigate("/user-dashboard");
+        } else if (account.role === "agent") {
+          navigate("/agent-dashboard");
         }
       })
       .catch((error) => {

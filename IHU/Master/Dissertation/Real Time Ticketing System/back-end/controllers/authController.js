@@ -1,43 +1,49 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import User from "../models/accountModel.js";
+import Account from "../models/accountModel.js";
 
 // Helper function to generate JWT token
-const generateToken = (user) => {
-  return jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, {
-    expiresIn: "1h",
-  });
+const generateToken = (account) => {
+  return jwt.sign(
+    { id: account._id, email: account.email },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: "1h",
+    }
+  );
 };
 
 // Helper function to compare passwords
-const comparePasswords = async (candidatePassword, userPassword) => {
-  return await bcrypt.compare(candidatePassword, userPassword);
+const comparePasswords = async (candidatePassword, accountPassword) => {
+  return await bcrypt.compare(candidatePassword, accountPassword);
 };
 
 // Registration controller function
-const registerUser = async (req, res) => {
-  const { username, email, password } = req.body;
+const registerAccount = async (req, res) => {
+  const { username, email, password, role, department } = req.body;
 
   try {
-    // Check if the user exists
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      return res.status(400).json({ message: "User already exists" });
+    // Check if the account exists
+    const existingAccount = await Account.findOne({ email });
+    if (existingAccount) {
+      return res.status(400).json({ message: "Account already exists" });
     }
 
-    // Create a new user instance
-    const newUser = new User({
+    // Create a new account instance
+    const newAccount = new Account({
       username,
       email,
-      password, // Password is hashed in user model
+      password, // Password is hashed in account model
+      role,
+      department,
     });
 
-    // Save user to the database
-    const savedUser = await newUser.save();
-    console.log("User saved to database");
+    // Save account to the database
+    const savedAccount = await newAccount.save();
+    console.log("Account saved to database");
 
-    // Send the response with the user data only
-    res.status(201).json({ user: savedUser });
+    // Send the response with the account data only
+    res.status(201).json({ account: savedAccount });
   } catch (error) {
     console.error(error);
     res
@@ -47,26 +53,26 @@ const registerUser = async (req, res) => {
 };
 
 // Login controller function
-const loginUser = async (req, res) => {
+const loginAccount = async (req, res) => {
   const { email, password } = req.body;
   try {
-    // Check if the user exists
-    const existingUser = await User.findOne({ email });
-    if (!existingUser) {
+    // Check if the account exists
+    const existingAccount = await Account.findOne({ email });
+    if (!existingAccount) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
     // Compare passwords using the helper function
-    const isMatch = await comparePasswords(password, existingUser.password);
+    const isMatch = await comparePasswords(password, existingAccount.password);
     if (!isMatch) {
       return res.status(400).json({ message: "Incorrect Password" });
     }
 
     // Generate a JWT token using the helper function
-    const token = generateToken(existingUser);
+    const token = generateToken(existingAccount);
 
-    // Send the response with the user and the token
-    res.status(200).json({ user: existingUser, token });
+    // Send the response with the account and the token
+    res.status(200).json({ account: existingAccount, token });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Something went wrong during login" });
@@ -74,4 +80,4 @@ const loginUser = async (req, res) => {
 };
 
 // Export the functions
-export { registerUser, loginUser };
+export { registerAccount, loginAccount };
