@@ -1,15 +1,17 @@
 import express, { response } from "express";
 import Ticket from "../models/ticketModel.js";
 import { sendMessage } from "../services/kafkaProducer.js";
+import authenticateJWT from "../middleware/authMiddleware.js";
 
 // Create an instance of Router interface
 const router = express.Router();
 
 // Create new ticket
-router.post("/create", async (req, res) => {
+router.post("/create", authenticateJWT, async (req, res) => {
   try {
     console.log("Received Payload:", req.body);
     const { title, description, category } = req.body;
+    const userId = req.user.id; // Extract user ID from decoded token
 
     // Send the new ticket to Kafka
     const messageData = JSON.stringify({
@@ -17,6 +19,7 @@ router.post("/create", async (req, res) => {
       description,
       category,
       status: "Waiting",
+      createdBy: userId, // Attach user ID
     });
     await sendMessage("new-ticket", messageData);
 

@@ -9,20 +9,24 @@ function CreateTicket() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const data = { title, description, category };
 
-    axios
-      .post(endpoints.CREATE_TICKET, data)
-      .then((response) => {
-        console.log("Ticket created successfully:", response.data);
-      })
-      .catch((error) => {
-        if (error.response) {
-          console.error("Backend error:", error.response.data.message);
-        } else {
-          console.error("Network or server error:", error.message);
-        }
+    const data = { title, description, category };
+    const token = localStorage.getItem("token");
+
+    try {
+      const response = await axios.post(endpoints.CREATE_TICKET, data, {
+        headers: {
+          Authorization: `Bearer ${token}`, // Add authorization header
+        },
       });
+      console.log(response.data); // Log the success message
+    } catch (error) {
+      if (error.response) {
+        console.error(error.response.data.message); // Backend error
+      } else {
+        console.error("Network or server error:", error.message); // Frontend error
+      }
+    }
   };
 
   return (

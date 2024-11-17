@@ -21,6 +21,11 @@ const ticketSchema = mongoose.Schema({
     enum: ["Technical Support", "General Inquiry", "Sales"],
     required: true,
   },
+  createdBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Account", // Reference the user / agent schema
+    required: true,
+  },
 });
 
 const Ticket = mongoose.model("Ticket", ticketSchema, "Tickets");

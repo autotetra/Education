@@ -31,12 +31,13 @@ const consumeMessages = async (topic) => {
         console.log("Received message:", payload);
 
         try {
-          const { title, description, category, status } = payload;
+          const { title, description, category, status, createdBy } = payload;
           const newTicket = new Ticket({
             title,
             description,
             category,
             status,
+            createdBy,
           });
 
           await newTicket.save(); // Save ticket to MongoDB
