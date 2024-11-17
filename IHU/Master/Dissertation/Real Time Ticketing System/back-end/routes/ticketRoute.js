@@ -1,4 +1,4 @@
-import express from "express";
+import express, { response } from "express";
 import Ticket from "../models/ticketModel.js";
 import { sendMessage } from "../services/kafkaProducer.js";
 
@@ -8,12 +8,14 @@ const router = express.Router();
 // Create new ticket
 router.post("/create", async (req, res) => {
   try {
-    const { title, description } = req.body;
+    console.log("Received Payload:", req.body);
+    const { title, description, category } = req.body;
 
     // Send the new ticket to Kafka
     const messageData = JSON.stringify({
       title,
       description,
+      category,
       status: "Waiting",
     });
     await sendMessage("new-ticket", messageData);

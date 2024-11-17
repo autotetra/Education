@@ -50,7 +50,7 @@ app.use(
 );
 
 // Use the tickets routes
-app.use("api/tickets", ticketRoutes);
+app.use("/api/tickets", ticketRoutes);
 
 // Use the auth routes for authentication
 app.use("/api/auth", authRoute);
@@ -58,6 +58,7 @@ app.use("/api/auth", authRoute);
 // Error handling middleware
 app.use((err, req, res, next) => {
   res.status(500).json({ message: err.message });
+  console.error(err);
 });
 
 // Run Server
