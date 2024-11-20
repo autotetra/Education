@@ -4,6 +4,7 @@ const endpoints = {
   REGISTER: `${API_BASE_URL}/auth/register`,
   LOGIN: `${API_BASE_URL}/auth/login`,
   CREATE_TICKET: `${API_BASE_URL}/tickets/create`,
+  GET_TICKETS: `${API_BASE_URL}/tickets`,
 };
 
 export default endpoints;
