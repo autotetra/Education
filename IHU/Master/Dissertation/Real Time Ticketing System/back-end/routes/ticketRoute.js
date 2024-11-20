@@ -30,9 +30,27 @@ router.post("/create", authenticateJWT, async (req, res) => {
 });
 
 // Get all tickets
-router.get("/", async (req, res) => {
+router.get("/", authenticateJWT, async (req, res) => {
   try {
-    const tickets = await Ticket.find();
+    const role = req.headers.role;
+    const userId = req.user.id;
+
+    console.log("Headers received:", req.headers);
+
+    let tickets;
+    if (role === "user") {
+      // Get tickets for the logged-in user
+      tickets = await Ticket.find({ createdBy: userId });
+    } else if (role === "agent") {
+      // Placeholder logic for agents
+      tickets = await Ticket.find({ category: req.user.department });
+    } else if (role === "admin") {
+      // Admin gets all tickets
+      tickets = await Ticket.find();
+    } else {
+      return res.status(403).json({ message: "Unauthorized role" });
+    }
+
     res.status(200).json(tickets);
   } catch (err) {
     res.status(500).json({ message: err.message });

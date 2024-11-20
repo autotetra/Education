@@ -20,15 +20,17 @@ function UserDashboard() {
   const fetchTickets = async () => {
     try {
       const token = localStorage.getItem("token");
+      const role = localStorage.getItem("role");
       const response = await axios.get(endpoints.GET_TICKETS, {
         headers: {
-          Authorization: `Bearer ${token}`, // Pass token in header
+          Authorization: `Bearer ${token}`,
+          Role: role,
         },
       });
       setTickets(response.data);
-      setShowTickets(true); // Show the tickets section
+      setShowTickets(true);
     } catch (error) {
-      console.error("Error fetching tickets: ", error.message);
+      console.error("Error fetching tickets:", error.message);
     }
   };
 

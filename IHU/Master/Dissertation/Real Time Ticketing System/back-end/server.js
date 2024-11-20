@@ -32,8 +32,6 @@ const server = http.createServer(app);
 const io = initializeWebSocket(server);
 
 // Middlewares
-// Serve the static files from "public" directory
-app.use(express.static(path.join(__dirname, "public")));
 
 // Global JSON parsing middleware
 app.use(express.json());
@@ -43,11 +41,16 @@ app.use(express.urlencoded({ extended: false }));
 // Middleware for Cross-Origin Resource Sharing
 app.use(
   cors({
-    origin: "http://localhost:3000", // Define front-end URL
-    methods: "GET, POST", // Allowed Methods
-    credentials: true, // Enable cookies/auth headers
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST"],
+    allowedHeaders: ["Content-Type", "Authorization", "Role"],
+    credentials: true,
   })
 );
+console.log("CORS middleware applied");
+
+// Serve the static files from "public" directory
+app.use(express.static(path.join(__dirname, "public")));
 
 // Use the tickets routes
 app.use("/api/tickets", ticketRoutes);
