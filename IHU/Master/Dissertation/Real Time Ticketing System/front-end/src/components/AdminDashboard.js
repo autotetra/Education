@@ -1,13 +1,39 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import endpoints from "../api/endpoints";
 
 function AdminDashboard() {
+  const [tickets, setTickets] = useState([]);
+  const [showTickets, setShowTickets] = useState(false);
+  const [error, setError] = useState("");
   const [role, setRole] = useState("user");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [department, setDepartment] = useState("N/A");
+
+  // Fetch Tickets
+  const fetchTickets = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const role = localStorage.getItem("role");
+      const response = await axios.get(endpoints.GET_TICKETS, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Role: role,
+        },
+      });
+      setTickets(response.data);
+      setShowTickets(true);
+    } catch (err) {
+      console.error("Error fetching tickets: ", err.message);
+      setError(err.response?.data?.message || "Failed to fetch tickets.");
+    }
+  };
+
+  useEffect(() => {
+    fetchTickets();
+  }, []);
 
   const handleLogout = () => {
     localStorage.clear();
@@ -91,6 +117,29 @@ function AdminDashboard() {
         <button type="submit">Register</button>
       </form>
       <button onClick={handleLogout}>Logout</button>
+      {showTickets && (
+        <div>
+          <h3>All Tickets</h3>
+          {error && <p style={{ color: "red" }}>{error}</p>}
+          {tickets.length > 0 ? (
+            <ul>
+              {tickets.map((ticket) => (
+                <li key={ticket._id}>
+                  <strong>Title:</strong> {ticket.title} <br />
+                  <strong>Description:</strong> {ticket.description} <br />
+                  <strong>Category:</strong> {ticket.category} <br />
+                  <strong>Status:</strong> {ticket.status} <br />
+                  <strong>Created By:</strong>{" "}
+                  {ticket.createdBy?.username || "N/A"}
+                  <br />
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>No tickets found.</p>
+          )}
+        </div>
+      )}
     </div>
   );
 }

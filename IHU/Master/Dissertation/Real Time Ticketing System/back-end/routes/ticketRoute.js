@@ -46,7 +46,7 @@ router.get("/", authenticateJWT, async (req, res) => {
       tickets = await Ticket.find({ category: req.user.department });
     } else if (role === "admin") {
       // Admin gets all tickets
-      tickets = await Ticket.find();
+      tickets = await Ticket.find().populate("createdBy", "username");
     } else {
       return res.status(403).json({ message: "Unauthorized role" });
     }
