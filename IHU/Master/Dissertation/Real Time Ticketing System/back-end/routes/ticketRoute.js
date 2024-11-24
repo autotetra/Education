@@ -10,47 +10,74 @@ const router = express.Router();
 router.post("/create", authenticateJWT, async (req, res) => {
   try {
     console.log("Received Payload:", req.body);
-    const { title, description, category } = req.body;
-    const userId = req.user.id; // Extract user ID from decoded token
 
-    // Send the new ticket to Kafka
-    const messageData = JSON.stringify({
+    // Extract fields from the request body
+    const { title, description, category } = req.body;
+    const userId = req.user.id; // Extract user ID from decoded token in middleware
+
+    // Input validation
+    if (!title || !description || !category) {
+      return res
+        .status(400)
+        .json({
+          error: "All fields (title, description, category) are required.",
+        });
+    }
+
+    // Create ticket object
+    const ticketData = {
       title,
       description,
       category,
-      status: "Waiting",
-      createdBy: userId, // Attach user ID
-    });
+      status: "Waiting", // Default status
+      createdBy: userId, // Attach the logged-in user's ID
+    };
+
+    // Send the new ticket data to Kafka
+    const messageData = JSON.stringify(ticketData);
     await sendMessage("new-ticket", messageData);
 
-    res.status(201).json({ message: "Ticket created successfully" });
+    // Respond with success and ticket details
+    res.status(201).json({
+      message: "Ticket created successfully",
+      ticket: ticketData, // Returning created ticket details
+    });
   } catch (error) {
-    res.status(500).json({ error: "Failed to create ticket." });
+    // Error handling
+    if (error.message.includes("Kafka")) {
+      return res
+        .status(503)
+        .json({ error: "Failed to send ticket data to Kafka." });
+    }
+
+    console.error("Error creating ticket:", error.message);
+    res
+      .status(500)
+      .json({
+        error: "An unexpected error occurred while creating the ticket.",
+      });
   }
 });
 
 // Get all tickets
 router.get("/", authenticateJWT, async (req, res) => {
   try {
-    const role = req.headers.role;
-    const userId = req.user.id;
-
-    console.log("Headers received:", req.headers);
+    const { role, department, id } = req.user;
 
     let tickets;
     if (role === "user") {
       // Get tickets for the logged-in user
-      tickets = await Ticket.find({ createdBy: userId });
+      tickets = await Ticket.find({ createdBy: id });
     } else if (role === "agent") {
       // Placeholder logic for agents
-      tickets = await Ticket.find({ category: req.user.department });
+      tickets = await Ticket.find({ category: department });
+      //console.log("User Department:", req.user.department);
     } else if (role === "admin") {
       // Admin gets all tickets
       tickets = await Ticket.find().populate("createdBy", "username");
     } else {
       return res.status(403).json({ message: "Unauthorized role" });
     }
-
     res.status(200).json(tickets);
   } catch (err) {
     res.status(500).json({ message: err.message });

@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
+import User from "../models/accountModel.js";
 
-const authenticateJWT = (req, res, next) => {
+const authenticateJWT = async (req, res, next) => {
   // Extract token from the authorization header
   const token = req.headers.authorization?.split(" ")[1];
   if (!token) {
@@ -10,7 +11,19 @@ const authenticateJWT = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET); // Verify the token
-    req.user = decoded; // Attach decoded payload (e.g., user ID) to req.user
+    const user = await User.findById(decoded.id); // Fetch User details from database
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    //Attach all necessary user details to req.user
+    req.user = {
+      id: user._id,
+      email: user.email,
+      role: user.role,
+      department: user.department,
+    };
     next(); // Continue next middleware
   } catch (error) {
     // If token is invalid, deny access
