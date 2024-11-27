@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import endpoints from "../api/endpoints";
+import io from "socket.io-client";
 
 const handleLogout = () => {
   localStorage.clear();
@@ -10,8 +11,25 @@ const handleLogout = () => {
 function AgentDashboard() {
   const [tickets, setTickets] = useState([]);
   const [selectedTicket, setSelectedTicket] = useState(null);
+  const [socket, setSocket] = useState(null);
 
-  // Fetch all tickets for the agent
+  // Establish WebSocket connection
+  useEffect(() => {
+    const newSocket = io("http://localhost:8000");
+    setSocket(newSocket);
+
+    newSocket.on("ticketUpdated", (updatedTicket) => {
+      setTickets((prevTickets) =>
+        prevTickets.map((ticket) =>
+          ticket._id === updatedTicket._id ? updatedTicket : ticket
+        )
+      );
+    });
+
+    return () => newSocket.close();
+  }, []);
+
+  // Fetch all tickets assigned to the agent
   const fetchTickets = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -38,7 +56,7 @@ function AgentDashboard() {
           Authorization: `Bearer ${token}`,
         },
       });
-      setSelectedTicket(response.data); // Store selected ticket details
+      setSelectedTicket(response.data);
     } catch (error) {
       console.error("Error fetching ticket details:", error.message);
     }
@@ -50,25 +68,40 @@ function AgentDashboard() {
       "Are you sure you want to delete this ticket?"
     );
 
-    if (!confirmDelete) {
-      return; // Exit if user cancels the action
-    }
+    if (!confirmDelete) return;
 
     try {
       const token = localStorage.getItem("token");
-
       await axios.delete(endpoints.DELETE_TICKET(ticketId), {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
-      // Refresh ticket list after successful deletion
       setTickets(tickets.filter((ticket) => ticket._id !== ticketId));
       alert("Ticket deleted successfully.");
     } catch (error) {
       console.error("Error deleting ticket:", error.message);
-      alert("Failed to delete ticket.");
+    }
+  };
+
+  // Update ticket status
+  const handleUpdateTicket = async (ticketId, status) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.put(
+        endpoints.UPDATE_TICKET(ticketId),
+        { status },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      socket.emit("ticketUpdated", response.data);
+      alert("Ticket status updated successfully.");
+    } catch (error) {
+      console.error("Error updating ticket:", error.message);
     }
   };
 
@@ -76,12 +109,22 @@ function AgentDashboard() {
     <div>
       <h1>Agent Dashboard</h1>
       <button onClick={fetchTickets}>View Tickets</button>
+      <button onClick={handleLogout}>Logout</button>
 
       <ul>
         {tickets.map((ticket) => (
           <li key={ticket._id}>
             <strong>Title:</strong> {ticket.title} <br />
-            <strong>Status:</strong> {ticket.status} <br />
+            <strong>Status:</strong>{" "}
+            <select
+              value={ticket.status}
+              onChange={(e) => handleUpdateTicket(ticket._id, e.target.value)}
+            >
+              <option value="Waiting">Waiting</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Resolved">Resolved</option>
+            </select>
+            <br />
             <button onClick={() => fetchTicketDetails(ticket._id)}>
               View Details
             </button>
@@ -111,8 +154,6 @@ function AgentDashboard() {
           </p>
         </div>
       )}
-
-      <button onClick={handleLogout}>Logout</button>
     </div>
   );
 }

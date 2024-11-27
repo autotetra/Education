@@ -1,4 +1,4 @@
-import express, { response } from "express";
+import express from "express";
 import Ticket from "../models/ticketModel.js";
 import { sendMessage } from "../services/kafkaProducer.js";
 import authenticateJWT from "../middleware/authMiddleware.js";
@@ -65,11 +65,10 @@ router.get("/", authenticateJWT, async (req, res) => {
       // Get tickets for the logged-in user
       tickets = await Ticket.find({ createdBy: id });
     } else if (role === "agent") {
-      // Placeholder logic for agents
+      // Get tickets for the agent's department
       tickets = await Ticket.find({ category: department });
-      //console.log("User Department:", req.user.department);
     } else if (role === "admin") {
-      // Admin gets all tickets
+      // Admin gets all tickets with createdBy populated
       tickets = await Ticket.find().populate("createdBy", "username");
     } else {
       return res.status(403).json({ message: "Unauthorized role" });
@@ -83,12 +82,16 @@ router.get("/", authenticateJWT, async (req, res) => {
 // Get ticket by id
 router.get("/:id", async (req, res) => {
   try {
-    const ticket = await Ticket.findById(req.params.id);
+    const ticket = await Ticket.findById(req.params.id).populate(
+      "createdBy",
+      "username"
+    ); // Populate createdBy field with username
     if (!ticket) {
-      res.status(404).json({ message: "Ticket not found" });
+      return res.status(404).json({ message: "Ticket not found" });
     }
     res.status(200).json(ticket);
   } catch (err) {
+    console.error("Error fetching ticket by ID:", err.message);
     res.status(500).json({ message: err.message });
   }
 });
@@ -111,7 +114,7 @@ router.put("/:id", authenticateJWT, async (req, res) => {
       req.params.id,
       { status }, // Only updating the status field
       { new: true } // Return the updated document
-    );
+    ).populate("createdBy", "username"); // Ensure createdBy is populated
 
     if (!updatedTicket) {
       return res.status(404).json({ message: "Ticket not found" });
@@ -119,7 +122,9 @@ router.put("/:id", authenticateJWT, async (req, res) => {
 
     // Emit WebSocket event for real-time updates
     const io = req.app.get("io");
-    io.emit("statusUpdated", updatedTicket); // Notify all connected clients
+    if (io) {
+      io.emit("statusUpdated", updatedTicket); // Notify all connected clients
+    }
 
     res
       .status(200)
@@ -138,7 +143,8 @@ router.delete("/:id", async (req, res) => {
       return res.status(404).json({ message: "Ticket not found" });
     res.status(200).json("Ticket deleted successfully");
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    console.error("Error deleting ticket:", err.message);
+    res.status(500).json({ message: "Failed to delete ticket" });
   }
 });
 
