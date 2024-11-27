@@ -49,6 +49,26 @@ function UserDashboard() {
     }
   };
 
+  const deleteTicket = async (ticketId) => {
+    try {
+      const confirmDelete = window.confirm(
+        "Are you sure you want to delete this ticket?"
+      );
+      if (!confirmDelete) return; // Exit if user cancels deletion
+
+      const token = localStorage.getItem("token");
+      await axios.delete(endpoints.DELETE_TICKET(ticketId), {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      alert("Ticket deleted successfully.");
+      fetchTickets(); // Refresh ticket list
+    } catch (error) {
+      console.error("Error deleting ticket:", error.message);
+    }
+  };
+
   return (
     <div>
       <h1>User Dashboard</h1>
@@ -71,6 +91,9 @@ function UserDashboard() {
                   <strong>Status:</strong> {ticket.status} <br />
                   <button onClick={() => fetchTicketDetails(ticket._id)}>
                     View Details
+                  </button>
+                  <button onClick={() => deleteTicket(ticket._id)}>
+                    Delete
                   </button>
                 </li>
               ))}

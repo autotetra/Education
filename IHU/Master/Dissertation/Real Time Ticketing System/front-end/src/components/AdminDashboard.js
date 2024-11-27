@@ -11,7 +11,7 @@ function AdminDashboard() {
   const [tickets, setTickets] = useState([]);
   const [selectedTicket, setSelectedTicket] = useState(null);
 
-  // Fetch all tickets
+  // Fetch all tickets for the admin
   const fetchTickets = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -44,6 +44,34 @@ function AdminDashboard() {
     }
   };
 
+  // Delete a specific ticket with confirmation
+  const deleteTicket = async (ticketId) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this ticket?"
+    );
+
+    if (!confirmDelete) {
+      return; // Exit if user cancels the action
+    }
+
+    try {
+      const token = localStorage.getItem("token");
+
+      await axios.delete(endpoints.DELETE_TICKET(ticketId), {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      // Refresh ticket list after successful deletion
+      setTickets(tickets.filter((ticket) => ticket._id !== ticketId));
+      alert("Ticket deleted successfully.");
+    } catch (error) {
+      console.error("Error deleting ticket:", error.message);
+      alert("Failed to delete ticket.");
+    }
+  };
+
   return (
     <div>
       <h1>Admin Dashboard</h1>
@@ -57,6 +85,7 @@ function AdminDashboard() {
             <button onClick={() => fetchTicketDetails(ticket._id)}>
               View Details
             </button>
+            <button onClick={() => deleteTicket(ticket._id)}>Delete</button>
           </li>
         ))}
       </ul>

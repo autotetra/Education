@@ -17,11 +17,9 @@ router.post("/create", authenticateJWT, async (req, res) => {
 
     // Input validation
     if (!title || !description || !category) {
-      return res
-        .status(400)
-        .json({
-          error: "All fields (title, description, category) are required.",
-        });
+      return res.status(400).json({
+        error: "All fields (title, description, category) are required.",
+      });
     }
 
     // Create ticket object
@@ -51,11 +49,9 @@ router.post("/create", authenticateJWT, async (req, res) => {
     }
 
     console.error("Error creating ticket:", error.message);
-    res
-      .status(500)
-      .json({
-        error: "An unexpected error occurred while creating the ticket.",
-      });
+    res.status(500).json({
+      error: "An unexpected error occurred while creating the ticket.",
+    });
   }
 });
 
@@ -97,21 +93,40 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// Update ticket
-router.put("/:id", async (req, res) => {
+/// Update ticket
+router.put("/:id", authenticateJWT, async (req, res) => {
   try {
-    const { title, description } = req.body;
+    const role = req.user.role;
+    const { status } = req.body;
+
+    // Restrict updates to agents and admins
+    if (role !== "agent" && role !== "admin") {
+      return res
+        .status(403)
+        .json({ message: "Unauthorized to update tickets" });
+    }
+
+    // Find and update the ticket
     const updatedTicket = await Ticket.findByIdAndUpdate(
       req.params.id,
-      { title, description },
-      { new: true }
+      { status }, // Only updating the status field
+      { new: true } // Return the updated document
     );
+
     if (!updatedTicket) {
-      res.status(404).json({ message: "Ticket not found" });
+      return res.status(404).json({ message: "Ticket not found" });
     }
-    res.status(200).json({ updatedTicket });
-  } catch (err) {
-    res.status(400).json({ message: err.message });
+
+    // Emit WebSocket event for real-time updates
+    const io = req.app.get("io");
+    io.emit("statusUpdated", updatedTicket); // Notify all connected clients
+
+    res
+      .status(200)
+      .json({ message: "Ticket status updated successfully", updatedTicket });
+  } catch (error) {
+    console.error("Error updating ticket:", error.message);
+    res.status(500).json({ message: "Failed to update ticket" });
   }
 });
 
