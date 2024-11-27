@@ -7,15 +7,15 @@ const handleLogout = () => {
   window.location.href = "/"; // Redirect to homepage
 };
 
-function AgentDashboard() {
+function AdminDashboard() {
   const [tickets, setTickets] = useState([]);
-  const [showTickets, setShowTickets] = useState(false);
+  const [selectedTicket, setSelectedTicket] = useState(null);
 
-  // Function to fetch tickets assigned to the agent
+  // Fetch all tickets for the admin
   const fetchTickets = async () => {
     try {
       const token = localStorage.getItem("token");
-      const role = localStorage.getItem("role"); // Fetch role from localStorage
+      const role = localStorage.getItem("role");
 
       const response = await axios.get(endpoints.GET_TICKETS, {
         headers: {
@@ -23,52 +23,69 @@ function AgentDashboard() {
           Role: role,
         },
       });
-
-      setTickets(response.data); // Update tickets state
-      setShowTickets(true); // Show tickets after fetching
+      setTickets(response.data);
     } catch (error) {
-      console.error(
-        "Error fetching tickets:",
-        error.response?.data?.message || error.message
-      );
+      console.error("Error fetching tickets:", error.message);
+    }
+  };
+
+  // Fetch details for a specific ticket
+  const fetchTicketDetails = async (ticketId) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get(endpoints.GET_TICKET_BY_ID(ticketId), {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setSelectedTicket(response.data); // Store selected ticket details
+    } catch (error) {
+      console.error("Error fetching ticket details:", error.message);
     }
   };
 
   return (
     <div>
-      <h1>Welcome to the Agent Dashboard</h1>
-      <p>Here, agents can view and manage their assigned tickets.</p>
+      <h1>Admin Dashboard</h1>
+      <button onClick={fetchTickets}>View All Tickets</button>
 
-      {/* Button to fetch tickets */}
-      <button onClick={fetchTickets}>View Tickets</button>
+      <ul>
+        {tickets.map((ticket) => (
+          <li key={ticket._id}>
+            <strong>Title:</strong> {ticket.title} <br />
+            <strong>Status:</strong> {ticket.status} <br />
+            <button onClick={() => fetchTicketDetails(ticket._id)}>
+              View Details
+            </button>
+          </li>
+        ))}
+      </ul>
 
-      {/* Render tickets if showTickets is true */}
-      {showTickets && (
+      {selectedTicket && (
         <div>
-          <h2>Your Tickets</h2>
-          {tickets.length > 0 ? (
-            <ul>
-              {tickets.map((ticket) => (
-                <li key={ticket._id}>
-                  <strong>Title:</strong> {ticket.title} <br />
-                  <strong>Description:</strong> {ticket.description} <br />
-                  <strong>Category:</strong> {ticket.category} <br />
-                  <strong>Status:</strong> {ticket.status} <br />
-                  <strong>Created By:</strong>{" "}
-                  {ticket.createdBy?.username || "N/A"}
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p>No tickets found.</p>
-          )}
+          <h2>Ticket Details</h2>
+          <p>
+            <strong>Title:</strong> {selectedTicket.title}
+          </p>
+          <p>
+            <strong>Description:</strong> {selectedTicket.description}
+          </p>
+          <p>
+            <strong>Category:</strong> {selectedTicket.category}
+          </p>
+          <p>
+            <strong>Status:</strong> {selectedTicket.status}
+          </p>
+          <p>
+            <strong>Created By:</strong>{" "}
+            {selectedTicket.createdBy?.username || "N/A"}
+          </p>
         </div>
       )}
 
-      {/* Logout button */}
       <button onClick={handleLogout}>Logout</button>
     </div>
   );
 }
 
-export default AgentDashboard;
+export default AdminDashboard;

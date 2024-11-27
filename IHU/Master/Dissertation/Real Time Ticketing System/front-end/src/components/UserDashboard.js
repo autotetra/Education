@@ -7,6 +7,7 @@ function UserDashboard() {
   const [showCreateTicket, setShowCreateTicket] = useState(false);
   const [tickets, setTickets] = useState([]);
   const [showTickets, setShowTickets] = useState(false); // Toggle for ticket list visibility
+  const [selectedTicket, setSelectedTicket] = useState(null); // Store details of selected ticket
 
   const handleCreateTicket = () => {
     setShowCreateTicket(true);
@@ -34,6 +35,20 @@ function UserDashboard() {
     }
   };
 
+  const fetchTicketDetails = async (ticketId) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get(endpoints.GET_TICKET_BY_ID(ticketId), {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setSelectedTicket(response.data);
+    } catch (error) {
+      console.error("Error fetching ticket details:", error.message);
+    }
+  };
+
   return (
     <div>
       <h1>User Dashboard</h1>
@@ -53,15 +68,39 @@ function UserDashboard() {
               {tickets.map((ticket) => (
                 <li key={ticket._id}>
                   <strong>Title:</strong> {ticket.title} <br />
-                  <strong>Description:</strong> {ticket.description} <br />
-                  <strong>Category:</strong> {ticket.category} <br />
-                  <strong>Status:</strong> {ticket.status}
+                  <strong>Status:</strong> {ticket.status} <br />
+                  <button onClick={() => fetchTicketDetails(ticket._id)}>
+                    View Details
+                  </button>
                 </li>
               ))}
             </ul>
           ) : (
             <p>No tickets found.</p>
           )}
+        </div>
+      )}
+
+      {/* Render Selected Ticket Details */}
+      {selectedTicket && (
+        <div>
+          <h2>Ticket Details</h2>
+          <p>
+            <strong>Title:</strong> {selectedTicket.title}
+          </p>
+          <p>
+            <strong>Description:</strong> {selectedTicket.description}
+          </p>
+          <p>
+            <strong>Category:</strong> {selectedTicket.category}
+          </p>
+          <p>
+            <strong>Status:</strong> {selectedTicket.status}
+          </p>
+          <p>
+            <strong>Created By:</strong>{" "}
+            {selectedTicket.createdBy?.username || "N/A"}
+          </p>
         </div>
       )}
     </div>
