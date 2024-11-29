@@ -15,22 +15,7 @@ function AdminDashboard() {
   const [showCreateTicket, setShowCreateTicket] = useState(false);
   const [socket, setSocket] = useState(null);
 
-  // Establish WebSocket connection
-  useEffect(() => {
-    const newSocket = io("http://localhost:8000");
-    setSocket(newSocket);
-
-    newSocket.on("ticketUpdated", (updatedTicket) => {
-      setTickets((prevTickets) =>
-        prevTickets.map((ticket) =>
-          ticket._id === updatedTicket._id ? updatedTicket : ticket
-        )
-      );
-    });
-
-    return () => newSocket.close();
-  }, []);
-
+  // Get all tickets
   const fetchTickets = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -48,6 +33,7 @@ function AdminDashboard() {
     }
   };
 
+  // Get specific ticket
   const fetchTicketDetails = async (ticketId) => {
     try {
       const token = localStorage.getItem("token");
@@ -62,6 +48,7 @@ function AdminDashboard() {
     }
   };
 
+  // Delete a ticket
   const deleteTicket = async (ticketId) => {
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this ticket?"
@@ -88,24 +75,7 @@ function AdminDashboard() {
     setShowCreateTicket(true);
   };
 
-  const handleUpdateTicket = async (ticketId, status) => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await axios.put(
-        endpoints.UPDATE_TICKET(ticketId),
-        { status },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      socket.emit("ticketUpdated", response.data);
-      alert("Ticket status updated successfully.");
-    } catch (error) {
-      console.error("Error updating ticket:", error.message);
-    }
-  };
+  const handleUpdateTicket = async (ticketId, status) => {};
 
   return (
     <div>

@@ -7,6 +7,8 @@ import AdminRoute from "./components/AdminRoute";
 import AdminDashboard from "./components/AdminDashboard";
 import AgentDashboard from "./components/AgentDashboard";
 import AgentRoute from "./components/AgentRoute";
+// Test component
+import WebSocketTest from "./components/Websocket";
 
 function App() {
   return (
@@ -37,6 +39,7 @@ function App() {
             </AdminRoute>
           }
         />
+        <Route path="/websocket-test" element={<WebSocketTest />} />
       </Routes>
     </Router>
   );
