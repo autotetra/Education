@@ -99,39 +99,37 @@ router.get("/:id", async (req, res) => {
 /// Update ticket
 router.put("/:id", authenticateJWT, async (req, res) => {
   try {
-    const role = req.user.role;
+    const { role } = req.user;
     const { status } = req.body;
 
-    // Restrict updates to agents and admins
     if (role !== "agent" && role !== "admin") {
       return res
         .status(403)
         .json({ message: "Unauthorized to update tickets" });
     }
 
-    // Find and update the ticket
     const updatedTicket = await Ticket.findByIdAndUpdate(
       req.params.id,
-      { status }, // Only updating the status field
-      { new: true } // Return the updated document
-    ).populate("createdBy", "username"); // Ensure createdBy is populated
+      { status },
+      { new: true }
+    ).populate("createdBy", "username");
 
     if (!updatedTicket) {
       return res.status(404).json({ message: "Ticket not found" });
     }
 
-    // Emit WebSocket event for real-time updates
     const io = req.app.get("io");
     if (io) {
-      io.emit("statusUpdated", updatedTicket); // Notify all connected clients
+      io.emit("statusUpdated", updatedTicket); // Broadcast the update
     }
 
-    res
-      .status(200)
-      .json({ message: "Ticket status updated successfully", updatedTicket });
+    res.status(200).json({
+      message: "Ticket status updated successfully",
+      updatedTicket,
+    });
   } catch (error) {
-    console.error("Error updating ticket:", error.message);
-    res.status(500).json({ message: "Failed to update ticket" });
+    console.error("Error in updating ticket:", error.message);
+    res.status(500).json({ message: "Internal server error" });
   }
 });
 

@@ -15,6 +15,16 @@ function AdminDashboard() {
   const [showCreateTicket, setShowCreateTicket] = useState(false);
   const [socket, setSocket] = useState(null);
 
+  // Initialize WebSocket connection
+  useEffect(() => {
+    const newSocket = io("http://localhost:8000"); // WebSocket server
+    setSocket(newSocket);
+
+    return () => {
+      newSocket.disconnect(); // Cleanup on unmount
+    };
+  }, []);
+
   // Get all tickets
   const fetchTickets = async () => {
     try {
@@ -75,7 +85,42 @@ function AdminDashboard() {
     setShowCreateTicket(true);
   };
 
-  const handleUpdateTicket = async (ticketId, status) => {};
+  const handleUpdateTicket = async (ticketId, status) => {
+    try {
+      const token = localStorage.getItem("token");
+
+      // Send the PUT request to update the ticket status
+      const response = await axios.put(
+        endpoints.UPDATE_TICKET(ticketId),
+        { status },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      // Check if response is successful
+      if (response.status === 200) {
+        // Update the UI with the updated ticket
+        const updatedTicket = response.data.updatedTicket;
+        setTickets((prevTickets) =>
+          prevTickets.map((ticket) =>
+            ticket._id === updatedTicket._id ? updatedTicket : ticket
+          )
+        );
+        alert("Ticket status updated successfully!");
+      } else {
+        throw new Error("Failed to update Ticket.");
+      }
+
+      // Emit the WebSocket event
+      socket.emit("statusUpdated", response.data.updatedTicket);
+    } catch (error) {
+      console.error("Error updating ticket:", error.message);
+      alert("Failed to update Ticket");
+    }
+  };
 
   return (
     <div>
