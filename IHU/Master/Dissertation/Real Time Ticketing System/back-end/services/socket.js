@@ -14,6 +14,15 @@ export const initializeWebSocket = (server) => {
   io.on("connection", (socket) => {
     console.log("User connected:", socket.id);
 
+    // Handle "statusUpdated" event and log it
+    socket.on("statusUpdated", (updatedTicket) => {
+      console.log(
+        `Event "statusUpdated" emitted to all clients:`,
+        updatedTicket
+      );
+      io.emit("statusUpdated", updatedTicket); // Send event to all clients
+    });
+
     socket.on("message", (msg) => {
       console.log("Message received:", msg);
       io.emit("message", msg); // Send message to all clients

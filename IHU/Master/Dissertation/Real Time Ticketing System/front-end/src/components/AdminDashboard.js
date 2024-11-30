@@ -115,7 +115,12 @@ function AdminDashboard() {
       }
 
       // Emit the WebSocket event
+      console.log(
+        "Emitting statusUpdated event for:",
+        response.data.updatedTicket
+      );
       socket.emit("statusUpdated", response.data.updatedTicket);
+      console.log("statusUpdated event emitted.");
     } catch (error) {
       console.error("Error updating ticket:", error.message);
       alert("Failed to update Ticket");

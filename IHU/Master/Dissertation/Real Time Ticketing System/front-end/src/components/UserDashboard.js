@@ -1,13 +1,54 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import CreateTicket from "./CreateTicket";
 import endpoints from "../api/endpoints";
 import axios from "axios";
+import io from "socket.io-client";
 
 function UserDashboard() {
   const [showCreateTicket, setShowCreateTicket] = useState(false);
   const [tickets, setTickets] = useState([]);
-  const [showTickets, setShowTickets] = useState(false); // Toggle for ticket list visibility
-  const [selectedTicket, setSelectedTicket] = useState(null); // Store details of selected ticket
+  const [showTickets, setShowTickets] = useState(false);
+  const [selectedTicket, setSelectedTicket] = useState(null);
+
+  useEffect(() => {
+    // Initialize WebSocket connection
+    const socket = io("http://localhost:8000");
+    console.log("WebSocket initialized:", socket);
+
+    // On connect, log socket ID
+    socket.on("connect", () => {
+      console.log("WebSocket connected with ID:", socket.id);
+    });
+
+    // Listen for the "statusUpdated" event
+    socket.on("statusUpdated", (updatedTicket) => {
+      console.log("Event received in UserDashboard:", updatedTicket);
+      if (!updatedTicket) {
+        console.error("No data received for statusUpdated event");
+        return;
+      }
+
+      // Debug previous state
+      console.log("Previous tickets:", tickets);
+
+      setTickets((prevTickets) =>
+        prevTickets.map((ticket) =>
+          ticket._id === updatedTicket._id ? updatedTicket : ticket
+        )
+      );
+
+      // Debug updated state (state changes are asynchronous)
+      setTimeout(() => {
+        console.log("Updated tickets state:", tickets);
+      }, 1000);
+    });
+
+    // Cleanup
+    return () => {
+      socket.disconnect();
+      console.log("WebSocket disconnected");
+    };
+  }, []);
 
   const handleCreateTicket = () => {
     setShowCreateTicket(true);
@@ -15,17 +56,15 @@ function UserDashboard() {
 
   const handleLogout = () => {
     localStorage.clear();
-    window.location.href = "/"; // Redirect to homepage
+    window.location.href = "/";
   };
 
   const fetchTickets = async () => {
     try {
       const token = localStorage.getItem("token");
-      const role = localStorage.getItem("role");
       const response = await axios.get(endpoints.GET_TICKETS, {
         headers: {
           Authorization: `Bearer ${token}`,
-          Role: role,
         },
       });
       setTickets(response.data);
@@ -54,7 +93,7 @@ function UserDashboard() {
       const confirmDelete = window.confirm(
         "Are you sure you want to delete this ticket?"
       );
-      if (!confirmDelete) return; // Exit if user cancels deletion
+      if (!confirmDelete) return;
 
       const token = localStorage.getItem("token");
       await axios.delete(endpoints.DELETE_TICKET(ticketId), {
@@ -63,7 +102,7 @@ function UserDashboard() {
         },
       });
       alert("Ticket deleted successfully.");
-      fetchTickets(); // Refresh ticket list
+      fetchTickets(); // Refresh tickets
     } catch (error) {
       console.error("Error deleting ticket:", error.message);
     }
@@ -76,10 +115,8 @@ function UserDashboard() {
       <button onClick={handleLogout}>Logout</button>
       <button onClick={fetchTickets}>See Tickets</button>
 
-      {/* Render Create Ticket Component */}
       {showCreateTicket && <CreateTicket />}
 
-      {/* Render Tickets */}
       {showTickets && (
         <div>
           <h2>Your Tickets</h2>
@@ -104,7 +141,6 @@ function UserDashboard() {
         </div>
       )}
 
-      {/* Render Selected Ticket Details */}
       {selectedTicket && (
         <div>
           <h2>Ticket Details</h2>
