@@ -11,7 +11,42 @@ const handleLogout = () => {
 function AgentDashboard() {
   const [tickets, setTickets] = useState([]);
   const [selectedTicket, setSelectedTicket] = useState(null);
-  const [socket, setSocket] = useState(null);
+
+  useEffect(() => {
+    // Initialize WebSocket connection
+    const socket = io("http://localhost:8000");
+    console.log("WebSocket initialized:", socket);
+
+    socket.on("connect", () => {
+      console.log("WebSocket connected with ID:", socket.id);
+    });
+
+    // Listen for the "statusUpdated" event
+    socket.on("statusUpdated", (updatedTicket) => {
+      console.log("Event received in AgentDashboard:", updatedTicket);
+      if (!updatedTicket) {
+        console.error("No data received for statusUpdated event");
+        return;
+      }
+
+      setTickets((prevTickets) =>
+        prevTickets.map((ticket) =>
+          ticket._id === updatedTicket._id ? updatedTicket : ticket
+        )
+      );
+
+      // Debug updated state
+      setTimeout(() => {
+        console.log("Updated tickets state in AgentDashboard:", tickets);
+      }, 1000);
+    });
+
+    // Cleanup
+    return () => {
+      socket.disconnect();
+      console.log("WebSocket disconnected in AgentDashboard");
+    };
+  }, []);
 
   // Fetch all tickets assigned to the agent
   const fetchTickets = async () => {
@@ -46,29 +81,6 @@ function AgentDashboard() {
     }
   };
 
-  // Delete a specific ticket with confirmation
-  const deleteTicket = async (ticketId) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this ticket?"
-    );
-
-    if (!confirmDelete) return;
-
-    try {
-      const token = localStorage.getItem("token");
-      await axios.delete(endpoints.DELETE_TICKET(ticketId), {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      setTickets(tickets.filter((ticket) => ticket._id !== ticketId));
-      alert("Ticket deleted successfully.");
-    } catch (error) {
-      console.error("Error deleting ticket:", error.message);
-    }
-  };
-
   // Update ticket status
   const handleUpdateTicket = async (ticketId, status) => {};
 
@@ -95,7 +107,6 @@ function AgentDashboard() {
             <button onClick={() => fetchTicketDetails(ticket._id)}>
               View Details
             </button>
-            <button onClick={() => deleteTicket(ticket._id)}>Delete</button>
           </li>
         ))}
       </ul>
