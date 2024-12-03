@@ -20,8 +20,30 @@ function AdminDashboard() {
     const newSocket = io("http://localhost:8000"); // WebSocket server
     setSocket(newSocket);
 
+    // Subscribe to statusUpdated events
+    newSocket.on("statusUpdated", (updatedTicket) => {
+      console.log("Event received in AdminDashboard:", updatedTicket);
+      if (!updatedTicket) {
+        console.error("No data received for statusUpdated event");
+        return;
+      }
+
+      // Update the ticket list dynamically
+      setTickets((prevTickets) =>
+        prevTickets.map((ticket) =>
+          ticket._id === updatedTicket._id ? updatedTicket : ticket
+        )
+      );
+
+      // Debug updated state
+      setTimeout(() => {
+        console.log("Updated tickets state in AdminDashboard:", tickets);
+      }, 1000);
+    });
+
     return () => {
       newSocket.disconnect(); // Cleanup on unmount
+      console.log("WebSocket disconnected in AdminDashboard");
     };
   }, []);
 
@@ -109,7 +131,6 @@ function AdminDashboard() {
             ticket._id === updatedTicket._id ? updatedTicket : ticket
           )
         );
-        alert("Ticket status updated successfully!");
       } else {
         throw new Error("Failed to update Ticket.");
       }
