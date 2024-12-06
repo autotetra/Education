@@ -3,6 +3,7 @@ import axios from "axios";
 import endpoints from "../api/endpoints";
 import CreateTicket from "./CreateTicket";
 import io from "socket.io-client";
+import "../styles/adminDashboard.css";
 
 const handleLogout = () => {
   localStorage.clear();
@@ -150,7 +151,8 @@ function AdminDashboard() {
 
   return (
     <div>
-      <h1>Admin Dashboard</h1>
+      <h2>Admin Dashboard</h2>
+      <hr />
       <button onClick={fetchTickets}>View All Tickets</button>
       <button onClick={handleCreateTicket}>Create Ticket</button>
       <button onClick={handleLogout}>Logout</button>
