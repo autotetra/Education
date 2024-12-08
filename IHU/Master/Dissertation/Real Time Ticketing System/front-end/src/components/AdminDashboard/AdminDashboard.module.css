@@ -1,0 +1,22 @@
+/* Center the header */
+.header {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 20px; /* Add some spacing below the header */
+}
+
+.divider {
+  margin: 20px 0;
+  border: none;
+  border-top: 1px solid #ddd;
+}
+
+.buttonContainer {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+}
+
+.buttonContainer button {
+  margin-left: 10px;
+}

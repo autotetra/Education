@@ -110,7 +110,7 @@ function UserDashboard() {
 
   return (
     <div>
-      <h1>User Dashboard</h1>
+      <h2>User Dashboard</h2>
       <button onClick={handleCreateTicket}>Create Ticket</button>
       <button onClick={handleLogout}>Logout</button>
       <button onClick={fetchTickets}>See Tickets</button>

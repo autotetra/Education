@@ -1,14 +1,14 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Home from "./components/Homepage";
-import UserRoute from "./components/UserRoute";
-import Dashboard from "./components/UserDashboard";
-import AdminRoute from "./components/AdminRoute";
-import AdminDashboard from "./components/AdminDashboard";
-import AgentDashboard from "./components/AgentDashboard";
-import AgentRoute from "./components/AgentRoute";
+import Home from "./components//Home/Homepage";
+import UserRoute from "./components/UserDashboard/UserRoute";
+import Dashboard from "./components/UserDashboard/UserDashboard";
+import AdminRoute from "./components//AdminDashboard/AdminRoute";
+import AdminDashboard from "./components/AdminDashboard/AdminDashboard";
+import AgentDashboard from "./components/AgentDashboard/AgentDashboard";
+import AgentRoute from "./components/AgentDashboard/AgentRoute";
 // Test component
-import WebSocketTest from "./components/[TEST]websocket";
+import WebSocketTest from "./components/clipboard/[TEST]websocket";
 
 function App() {
   return (

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import endpoints from "../api/endpoints";
+import endpoints from "../../api/endpoints";
 import io from "socket.io-client";
 
 const handleLogout = () => {
@@ -118,7 +118,7 @@ function AgentDashboard() {
 
   return (
     <div>
-      <h1>Agent Dashboard</h1>
+      <h2>Agent Dashboard</h2>
       <button onClick={fetchTickets}>View Tickets</button>
       <button onClick={handleLogout}>Logout</button>
 
