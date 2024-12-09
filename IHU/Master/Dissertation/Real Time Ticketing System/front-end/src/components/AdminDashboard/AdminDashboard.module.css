@@ -1,22 +1,50 @@
-/* Center the header */
+/* Admin Dashboard Header */
 .header {
   text-align: center;
-  font-size: 2rem;
-  margin-bottom: 20px; /* Add some spacing below the header */
+  margin: 0;
 }
 
+/* Logout Button */
+.logoutButton {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+}
+
+/* Create Ticket Section */
+.createTicketSection {
+  margin-top: 20px;
+  margin-left: 10px;
+}
+
+/* Divider */
 .divider {
   margin: 20px 0;
   border: none;
-  border-top: 1px solid #ddd;
+  border-top: 1px solid #000;
 }
 
-.buttonContainer {
+/* Tickets Container */
+.ticketsContainer {
   display: flex;
-  justify-content: flex-end;
-  margin-bottom: 20px;
+  justify-content: space-between; /* Equal spacing between sections */
+  margin-top: 20px; /* Space below the Create Ticket section */
 }
 
-.buttonContainer button {
-  margin-left: 10px;
+/* Ticket List Section */
+.ticketList {
+  flex: 1; /* Take up equal space */
+  margin-right: 10px; /* Add space between sections */
+}
+
+/* Ticket Details Section */
+.ticketDetails {
+  flex: 1; /* Take up equal space */
+  margin-left: 10px; /* Add space between sections */
+}
+
+/* Section Header */
+.sectionHeader {
+  margin: 0 0 10px 0; /* Margin below the header */
+  text-align: center; /* Centered text for each section */
 }

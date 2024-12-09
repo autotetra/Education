@@ -13,7 +13,6 @@ const handleLogout = () => {
 function AdminDashboard() {
   const [tickets, setTickets] = useState([]);
   const [selectedTicket, setSelectedTicket] = useState(null);
-  const [showCreateTicket, setShowCreateTicket] = useState(false);
   const [socket, setSocket] = useState(null);
 
   // Initialize WebSocket connection
@@ -36,6 +35,13 @@ function AdminDashboard() {
         )
       );
 
+      // Update the selected ticket if it matches the updated ticket
+      setSelectedTicket((prevSelected) =>
+        prevSelected && prevSelected._id === updatedTicket._id
+          ? updatedTicket
+          : prevSelected
+      );
+
       // Debug updated state
       setTimeout(() => {
         console.log("Updated tickets state in AdminDashboard:", tickets);
@@ -46,6 +52,11 @@ function AdminDashboard() {
       newSocket.disconnect(); // Cleanup on unmount
       console.log("WebSocket disconnected in AdminDashboard");
     };
+  }, []);
+
+  // Fetch tickets on component mount
+  useEffect(() => {
+    fetchTickets(); // Call fetchTickets when the component mounts
   }, []);
 
   // Get all tickets
@@ -104,15 +115,10 @@ function AdminDashboard() {
     }
   };
 
-  const handleCreateTicket = () => {
-    setShowCreateTicket(true);
-  };
-
   const handleUpdateTicket = async (ticketId, status) => {
     try {
       const token = localStorage.getItem("token");
 
-      // Send the PUT request to update the ticket status
       const response = await axios.put(
         endpoints.UPDATE_TICKET(ticketId),
         { status },
@@ -123,9 +129,7 @@ function AdminDashboard() {
         }
       );
 
-      // Check if response is successful
       if (response.status === 200) {
-        // Update the UI with the updated ticket
         const updatedTicket = response.data.updatedTicket;
         setTickets((prevTickets) =>
           prevTickets.map((ticket) =>
@@ -136,13 +140,7 @@ function AdminDashboard() {
         throw new Error("Failed to update Ticket.");
       }
 
-      // Emit the WebSocket event
-      console.log(
-        "Emitting statusUpdated event for:",
-        response.data.updatedTicket
-      );
       socket.emit("statusUpdated", response.data.updatedTicket);
-      console.log("statusUpdated event emitted.");
     } catch (error) {
       console.error("Error updating ticket:", error.message);
       alert("Failed to update Ticket");
@@ -151,59 +149,82 @@ function AdminDashboard() {
 
   return (
     <div>
+      {/* Logout Button */}
+      <button onClick={handleLogout} className={styles.logoutButton}>
+        Logout
+      </button>
+
+      {/* Header */}
       <header className={styles.header}>Admin Dashboard</header>
-      <hr className={styles.buttonContainer} />
-      <div className={styles.buttonContainer}>
-        <button onClick={fetchTickets}>View All Tickets</button>
-        <button onClick={handleCreateTicket}>Create Ticket</button>
-        <button onClick={handleLogout}>Logout</button>
+      <hr className={styles.divider} />
+
+      {/* Create Ticket Section */}
+      <div className={styles.createTicketSection}>
+        <CreateTicket />
       </div>
 
-      {showCreateTicket && <CreateTicket />}
+      <hr className={styles.divider} />
 
-      <ul>
-        {tickets.map((ticket) => (
-          <li key={ticket._id}>
-            <strong>Title:</strong> {ticket.title} <br />
-            <strong>Status:</strong>{" "}
-            <select
-              value={ticket.status}
-              onChange={(e) => handleUpdateTicket(ticket._id, e.target.value)}
-            >
-              <option value="Waiting">Waiting</option>
-              <option value="In Progress">In Progress</option>
-              <option value="Resolved">Resolved</option>
-            </select>
-            <br />
-            <button onClick={() => fetchTicketDetails(ticket._id)}>
-              View Details
-            </button>
-            <button onClick={() => deleteTicket(ticket._id)}>Delete</button>
-          </li>
-        ))}
-      </ul>
-
-      {selectedTicket && (
-        <div>
-          <h2>Ticket Details</h2>
-          <p>
-            <strong>Title:</strong> {selectedTicket.title}
-          </p>
-          <p>
-            <strong>Description:</strong> {selectedTicket.description}
-          </p>
-          <p>
-            <strong>Category:</strong> {selectedTicket.category}
-          </p>
-          <p>
-            <strong>Status:</strong> {selectedTicket.status}
-          </p>
-          <p>
-            <strong>Created By:</strong>{" "}
-            {selectedTicket.createdBy?.username || "N/A"}
-          </p>
+      {/* Tickets and Details */}
+      <div className={styles.ticketsContainer}>
+        {/* Ticket List Section */}
+        <div className={styles.ticketList}>
+          <h3 className={styles.sectionHeader}>Ticket List</h3>
+          {tickets.length > 0 ? (
+            tickets.map((ticket) => (
+              <div key={ticket._id} className={styles.ticketCard}>
+                <strong>Title:</strong> {ticket.title}
+                <br />
+                <strong>Status:</strong>{" "}
+                <select
+                  value={ticket.status}
+                  onChange={(e) =>
+                    handleUpdateTicket(ticket._id, e.target.value)
+                  }
+                >
+                  <option value="Waiting">Waiting</option>
+                  <option value="In Progress">In Progress</option>
+                  <option value="Resolved">Resolved</option>
+                </select>
+                <br />
+                <button onClick={() => fetchTicketDetails(ticket._id)}>
+                  View Details
+                </button>
+                <button onClick={() => deleteTicket(ticket._id)}>Delete</button>
+              </div>
+            ))
+          ) : (
+            <p>No tickets available</p>
+          )}
         </div>
-      )}
+
+        {/* Ticket Details Section */}
+        <div className={styles.ticketDetails}>
+          <h3 className={styles.sectionHeader}>Ticket Details</h3>
+          {selectedTicket ? (
+            <>
+              <p>
+                <strong>Title:</strong> {selectedTicket.title}
+              </p>
+              <p>
+                <strong>Description:</strong> {selectedTicket.description}
+              </p>
+              <p>
+                <strong>Category:</strong> {selectedTicket.category}
+              </p>
+              <p>
+                <strong>Status:</strong> {selectedTicket.status}
+              </p>
+              <p>
+                <strong>Created By:</strong>{" "}
+                {selectedTicket.createdBy?.username || "N/A"}
+              </p>
+            </>
+          ) : (
+            <p>Select a ticket to view details</p>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
