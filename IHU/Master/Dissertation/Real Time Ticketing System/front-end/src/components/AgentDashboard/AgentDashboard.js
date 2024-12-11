@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import endpoints from "../../api/endpoints";
 import io from "socket.io-client";
+import styles from "./AgentDashboard.module.css";
 
 const handleLogout = () => {
   localStorage.clear();
@@ -42,6 +43,11 @@ function AgentDashboard() {
       newSocket.disconnect();
       console.log("WebSocket disconnected in AgentDashboard");
     };
+  }, []);
+
+  useEffect(() => {
+    // Fetch tickets on mount
+    fetchTickets();
   }, []);
 
   // Fetch all tickets assigned to the agent
@@ -118,52 +124,70 @@ function AgentDashboard() {
 
   return (
     <div>
-      <h3>Agent Dashboard</h3>
-      <button onClick={fetchTickets}>View Tickets</button>
-      <button onClick={handleLogout}>Logout</button>
-
-      <ul>
-        {tickets.map((ticket) => (
-          <li key={ticket._id}>
-            <strong>Title:</strong> {ticket.title} <br />
-            <strong>Status:</strong>{" "}
-            <select
-              value={ticket.status}
-              onChange={(e) => handleUpdateTicket(ticket._id, e.target.value)}
-            >
-              <option value="Waiting">Waiting</option>
-              <option value="In Progress">In Progress</option>
-              <option value="Resolved">Resolved</option>
-            </select>
-            <br />
-            <button onClick={() => fetchTicketDetails(ticket._id)}>
-              View Details
-            </button>
-          </li>
-        ))}
-      </ul>
-
-      {selectedTicket && (
-        <div>
-          <h2>Ticket Details</h2>
-          <p>
-            <strong>Title:</strong> {selectedTicket.title}
-          </p>
-          <p>
-            <strong>Description:</strong> {selectedTicket.description}
-          </p>
-          <p>
-            <strong>Category:</strong> {selectedTicket.category}
-          </p>
-          <p>
-            <strong>Status:</strong> {selectedTicket.status}
-          </p>
-          <p>
-            <strong>Created By:</strong>{" "}
-            {selectedTicket.createdBy?.username || "N/A"}
-          </p>
+      {/* Header Section */}
+      <header className={styles.header}>
+        <h3>Agent Dashboard</h3>
+        <button onClick={handleLogout} className={styles.logoutButton}>
+          Logout
+        </button>
+      </header>
+      <hr className={styles.divider} />
+      {/* Main Dashboard Container */}
+      <div className={styles.dashboardContainer}>
+        {/* Assigned Tickets Section */}
+        <div className={styles.ticketsList}>
+          <h3>Assigned Tickets</h3>
+          <ul>
+            {tickets.map((ticket) => (
+              <li key={ticket._id}>
+                <strong>Title:</strong> {ticket.title} <br />
+                <strong>Status:</strong>{" "}
+                <select
+                  value={ticket.status}
+                  onChange={(e) =>
+                    handleUpdateTicket(ticket._id, e.target.value)
+                  }
+                >
+                  <option value="Waiting">Waiting</option>
+                  <option value="In Progress">In Progress</option>
+                  <option value="Resolved">Resolved</option>
+                </select>
+                <br />
+                <button onClick={() => fetchTicketDetails(ticket._id)}>
+                  View Details
+                </button>
+              </li>
+            ))}
+          </ul>
         </div>
-      )}
+
+        {/* Ticket Details Section */}
+        <div className={styles.ticketDetails}>
+          <h3>Ticket Details</h3>
+          {selectedTicket ? (
+            <div>
+              <p>
+                <strong>Title:</strong> {selectedTicket.title}
+              </p>
+              <p>
+                <strong>Description:</strong> {selectedTicket.description}
+              </p>
+              <p>
+                <strong>Category:</strong> {selectedTicket.category}
+              </p>
+              <p>
+                <strong>Status:</strong> {selectedTicket.status}
+              </p>
+              <p>
+                <strong>Created By:</strong>{" "}
+                {selectedTicket.createdBy?.username || "N/A"}
+              </p>
+            </div>
+          ) : (
+            <p>Select a ticket to view details.</p>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

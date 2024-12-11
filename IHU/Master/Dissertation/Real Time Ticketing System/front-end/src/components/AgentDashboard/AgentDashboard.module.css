@@ -1,0 +1,38 @@
+/* Header */
+.header {
+  text-align: center;
+  position: relative;
+}
+
+/* Divider */
+.divider {
+  margin: 20px 0;
+  border: none;
+  border-top: 1px solid #000;
+}
+
+/* Logout Button */
+.logoutButton {
+  position: absolute;
+  top: 0;
+  right: 10px;
+}
+
+/* Dashboard Container */
+.dashboardContainer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+/* Tickets List */
+.ticketsList {
+  flex: 1;
+  margin-left: 5%;
+}
+
+/* Ticket Details */
+.ticketDetails {
+  flex: 1;
+  margin-right: 5%;
+}
