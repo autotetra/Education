@@ -9,6 +9,17 @@
   right: 10px;
 }
 
+.divider {
+  margin: 20px 0;
+  border: none;
+  border-top: 1px solid #000;
+}
+
+.createTicketSection {
+  margin-left: 5%; /* Align the section to the left with consistent margin */
+  margin-bottom: 20px;
+}
+
 .dashboardContainer {
   display: flex;
   justify-content: space-between;
@@ -19,12 +30,12 @@
 
 .ticketsList {
   flex: 1;
-  margin-left: 5%;
+  margin-left: 5%; /* Consistent left margin */
 }
 
-.createTicketSection {
+.ticketDetails {
   flex: 1;
-  margin-right: 5%;
+  margin-left: 5%; /* Consistent left margin */
 }
 
 .ticketList {
@@ -34,11 +45,4 @@
 
 .ticketItem {
   margin-bottom: 10px;
-  list-style-type: none;
-}
-
-.divider {
-  margin: 20px 0;
-  border: none;
-  border-top: 1px solid #000;
 }

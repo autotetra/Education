@@ -94,6 +94,11 @@ function UserDashboard() {
         Logout
       </button>
       <hr className={styles.divider} />
+
+      <div className={styles.createTicketSection}>
+        <CreateTicket />
+      </div>
+      <hr className={styles.divider} />
       <div className={styles.dashboardContainer}>
         <div className={styles.ticketsList}>
           <h3>My Tickets</h3>
@@ -114,33 +119,32 @@ function UserDashboard() {
           )}
         </div>
 
-        <div className={styles.createTicketSection}>
-          <h3>Create Ticket</h3>
-          <CreateTicket />
-        </div>
-      </div>
-
-      {selectedTicket && (
         <div className={styles.ticketDetails}>
           <h3>Ticket Details</h3>
-          <p>
-            <strong>Title:</strong> {selectedTicket.title}
-          </p>
-          <p>
-            <strong>Description:</strong> {selectedTicket.description}
-          </p>
-          <p>
-            <strong>Category:</strong> {selectedTicket.category}
-          </p>
-          <p>
-            <strong>Status:</strong> {selectedTicket.status}
-          </p>
-          <p>
-            <strong>Created By:</strong>{" "}
-            {selectedTicket.createdBy?.username || "N/A"}
-          </p>
+          {selectedTicket ? (
+            <>
+              <p>
+                <strong>Title:</strong> {selectedTicket.title}
+              </p>
+              <p>
+                <strong>Description:</strong> {selectedTicket.description}
+              </p>
+              <p>
+                <strong>Category:</strong> {selectedTicket.category}
+              </p>
+              <p>
+                <strong>Status:</strong> {selectedTicket.status}
+              </p>
+              <p>
+                <strong>Created By:</strong>{" "}
+                {selectedTicket.createdBy?.username || "N/A"}
+              </p>
+            </>
+          ) : (
+            <p>Select a ticket to view details</p>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 }

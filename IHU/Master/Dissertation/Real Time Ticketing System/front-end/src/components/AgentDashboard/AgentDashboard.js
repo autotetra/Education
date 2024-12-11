@@ -132,14 +132,15 @@ function AgentDashboard() {
         </button>
       </header>
       <hr className={styles.divider} />
+
       {/* Main Dashboard Container */}
       <div className={styles.dashboardContainer}>
         {/* Assigned Tickets Section */}
         <div className={styles.ticketsList}>
           <h3>Assigned Tickets</h3>
-          <ul>
+          <ul className={styles.ticketList}>
             {tickets.map((ticket) => (
-              <li key={ticket._id}>
+              <li key={ticket._id} className={styles.ticketItem}>
                 <strong>Title:</strong> {ticket.title} <br />
                 <strong>Status:</strong>{" "}
                 <select

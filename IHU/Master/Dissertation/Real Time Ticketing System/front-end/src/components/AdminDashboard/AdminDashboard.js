@@ -164,7 +164,6 @@ function AdminDashboard() {
       <div className={styles.createTicketSection}>
         <CreateTicket />
       </div>
-
       <hr className={styles.divider} />
 
       {/* Tickets and Details */}
@@ -172,32 +171,36 @@ function AdminDashboard() {
         {/* Ticket List Section */}
         <div className={styles.ticketList}>
           <h3 className={styles.sectionHeader}>Ticket List</h3>
-          {tickets.length > 0 ? (
-            tickets.map((ticket) => (
-              <div key={ticket._id} className={styles.ticketCard}>
-                <strong>Title:</strong> {ticket.title}
-                <br />
-                <strong>Status:</strong>{" "}
-                <select
-                  value={ticket.status}
-                  onChange={(e) =>
-                    handleUpdateTicket(ticket._id, e.target.value)
-                  }
-                >
-                  <option value="Waiting">Waiting</option>
-                  <option value="In Progress">In Progress</option>
-                  <option value="Resolved">Resolved</option>
-                </select>
-                <br />
-                <button onClick={() => fetchTicketDetails(ticket._id)}>
-                  View Details
-                </button>
-                <button onClick={() => deleteTicket(ticket._id)}>Delete</button>
-              </div>
-            ))
-          ) : (
-            <p>No tickets available</p>
-          )}
+          <ul>
+            {tickets.length > 0 ? (
+              tickets.map((ticket) => (
+                <li key={ticket._id}>
+                  <strong>Title:</strong> {ticket.title}
+                  <br />
+                  <strong>Status:</strong>{" "}
+                  <select
+                    value={ticket.status}
+                    onChange={(e) =>
+                      handleUpdateTicket(ticket._id, e.target.value)
+                    }
+                  >
+                    <option value="Waiting">Waiting</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Resolved">Resolved</option>
+                  </select>
+                  <br />
+                  <button onClick={() => fetchTicketDetails(ticket._id)}>
+                    View Details
+                  </button>
+                  <button onClick={() => deleteTicket(ticket._id)}>
+                    Delete
+                  </button>
+                </li>
+              ))
+            ) : (
+              <p>No tickets available</p>
+            )}
+          </ul>
         </div>
 
         {/* Ticket Details Section */}
