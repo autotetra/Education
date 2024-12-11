@@ -118,7 +118,7 @@ function AgentDashboard() {
 
   return (
     <div>
-      <h2>Agent Dashboard</h2>
+      <h3>Agent Dashboard</h3>
       <button onClick={fetchTickets}>View Tickets</button>
       <button onClick={handleLogout}>Logout</button>
 

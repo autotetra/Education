@@ -1,45 +1,44 @@
-/* User Dashboard Header */
 .header {
-  text-align: center; /* Center-align the header text */
-  margin-bottom: 20px; /* Add space below the header */
+  text-align: center;
+  margin-bottom: 20px;
 }
 
-/* Container for Create Ticket and Tickets List */
+.logoutButton {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+}
+
 .dashboardContainer {
-  display: flex; /* Arrange children horizontally */
-  justify-content: space-between; /* Space between the two sections */
-  gap: 20px; /* Add space between sections */
-  margin-top: 20px; /* Space below the header */
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-top: 20px;
+  gap: 20px;
 }
 
-/* Create Ticket Section */
-.createTicketSection {
-  flex: 1; /* Allow it to take one part of the available space */
-  max-width: 40%; /* Restrict maximum width */
-  margin-left: 20px; /* Add left margin for spacing */
-}
-
-/* Tickets Section */
 .ticketsList {
-  flex: 2; /* Allow it to take two parts of the available space */
-  margin-right: 20px; /* Add right margin for spacing */
+  flex: 1;
+  margin-left: 5%;
 }
 
-/* Ticket List Items */
+.createTicketSection {
+  flex: 1;
+  margin-right: 5%;
+}
+
+.ticketList {
+  padding: 0;
+  margin: 0;
+}
+
 .ticketItem {
-  margin-bottom: 10px; /* Add space between tickets */
-  list-style-type: none; /* Remove default bullet points */
+  margin-bottom: 10px;
+  list-style-type: none;
 }
 
-.ticketItem strong {
-  display: block; /* Display labels on new lines for readability */
-}
-
-.ticketItem button {
-  margin-top: 5px; /* Add space between text and buttons */
-}
-
-/* Ticket Details Section */
-.ticketDetails {
-  margin-top: 20px; /* Add space above the details section */
+.divider {
+  margin: 20px 0;
+  border: none;
+  border-top: 1px solid #000;
 }

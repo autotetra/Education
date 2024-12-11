@@ -5,11 +5,16 @@ import styles from "./Home.module.css";
 
 function Home() {
   return (
-    <div className={styles.homeContainer}>
-      <header className={styles.header}>Welcome to the Ticketing System</header>
-      <div className={styles.authContainer}>
-        <Login />
-        <Register />
+    <div>
+      <h3 className={styles.header}>Welcome to the Ticketing System</h3>
+      <hr className={styles.divider} />
+      <div className={styles.homeContainer}>
+        <div className={styles.loginSection}>
+          <Login />
+        </div>
+        <div className={styles.registerSection}>
+          <Register />
+        </div>
       </div>
     </div>
   );

@@ -155,7 +155,9 @@ function AdminDashboard() {
       </button>
 
       {/* Header */}
-      <header className={styles.header}>Admin Dashboard</header>
+      <header className={styles.header}>
+        <h3>Admin Dashboard</h3>
+      </header>
       <hr className={styles.divider} />
 
       {/* Create Ticket Section */}

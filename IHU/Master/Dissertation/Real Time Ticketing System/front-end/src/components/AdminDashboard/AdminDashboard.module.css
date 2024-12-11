@@ -27,24 +27,24 @@
 /* Tickets Container */
 .ticketsContainer {
   display: flex;
-  justify-content: space-between; /* Equal spacing between sections */
-  margin-top: 20px; /* Space below the Create Ticket section */
+  justify-content: space-between;
+  margin-top: 20px;
 }
 
 /* Ticket List Section */
 .ticketList {
-  flex: 1; /* Take up equal space */
-  margin-right: 10px; /* Add space between sections */
+  flex: 1;
+  margin-right: 10px;
 }
 
 /* Ticket Details Section */
 .ticketDetails {
-  flex: 1; /* Take up equal space */
-  margin-left: 10px; /* Add space between sections */
+  flex: 1;
+  margin-left: 10px;
 }
 
 /* Section Header */
 .sectionHeader {
-  margin: 0 0 10px 0; /* Margin below the header */
-  text-align: center; /* Centered text for each section */
+  margin: 0 0 10px 0;
+  text-align: center;
 }

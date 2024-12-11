@@ -3,6 +3,7 @@ import CreateTicket from "../../Shared/CreateTicket";
 import endpoints from "../../api/endpoints";
 import axios from "axios";
 import io from "socket.io-client";
+import styles from "./UserDashboard.module.css";
 
 function UserDashboard() {
   const [tickets, setTickets] = useState([]);
@@ -88,38 +89,40 @@ function UserDashboard() {
 
   return (
     <div>
-      <h2>User Dashboard</h2>
-      <button onClick={handleLogout}>Logout</button>
+      <h3 className={styles.header}>User Dashboard</h3>
+      <button onClick={handleLogout} className={styles.logoutButton}>
+        Logout
+      </button>
+      <hr className={styles.divider} />
+      <div className={styles.dashboardContainer}>
+        <div className={styles.ticketsList}>
+          <h3>My Tickets</h3>
+          {tickets.length > 0 ? (
+            <ul className={styles.ticketList}>
+              {tickets.map((ticket) => (
+                <li key={ticket._id} className={styles.ticketItem}>
+                  <strong>Title:</strong> {ticket.title} <br />
+                  <strong>Status:</strong> {ticket.status} <br />
+                  <button onClick={() => fetchTicketDetails(ticket._id)}>
+                    View Details
+                  </button>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>No tickets found.</p>
+          )}
+        </div>
 
-      {/* Create Ticket Section */}
-      <div>
-        <CreateTicket />
+        <div className={styles.createTicketSection}>
+          <h3>Create Ticket</h3>
+          <CreateTicket />
+        </div>
       </div>
 
-      {/* Tickets Section */}
-      <div>
-        <h3>My Tickets</h3>
-        {tickets.length > 0 ? (
-          <ul>
-            {tickets.map((ticket) => (
-              <li key={ticket._id}>
-                <strong>Title:</strong> {ticket.title} <br />
-                <strong>Status:</strong> {ticket.status} <br />
-                <button onClick={() => fetchTicketDetails(ticket._id)}>
-                  View Details
-                </button>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p>No tickets found.</p>
-        )}
-      </div>
-
-      {/* Ticket Details Section */}
       {selectedTicket && (
-        <div>
-          <h2>Ticket Details</h2>
+        <div className={styles.ticketDetails}>
+          <h3>Ticket Details</h3>
           <p>
             <strong>Title:</strong> {selectedTicket.title}
           </p>
