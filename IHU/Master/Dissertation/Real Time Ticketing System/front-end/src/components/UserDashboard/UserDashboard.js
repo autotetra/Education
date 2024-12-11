@@ -5,9 +5,7 @@ import axios from "axios";
 import io from "socket.io-client";
 
 function UserDashboard() {
-  const [showCreateTicket, setShowCreateTicket] = useState(false);
   const [tickets, setTickets] = useState([]);
-  const [showTickets, setShowTickets] = useState(false);
   const [selectedTicket, setSelectedTicket] = useState(null);
 
   useEffect(() => {
@@ -50,9 +48,10 @@ function UserDashboard() {
     };
   }, []);
 
-  const handleCreateTicket = () => {
-    setShowCreateTicket(true);
-  };
+  useEffect(() => {
+    // Fetch tickets on mount
+    fetchTickets();
+  }, []);
 
   const handleLogout = () => {
     localStorage.clear();
@@ -68,7 +67,6 @@ function UserDashboard() {
         },
       });
       setTickets(response.data);
-      setShowTickets(true);
     } catch (error) {
       console.error("Error fetching tickets:", error.message);
     }
@@ -88,59 +86,37 @@ function UserDashboard() {
     }
   };
 
-  const deleteTicket = async (ticketId) => {
-    try {
-      const confirmDelete = window.confirm(
-        "Are you sure you want to delete this ticket?"
-      );
-      if (!confirmDelete) return;
-
-      const token = localStorage.getItem("token");
-      await axios.delete(endpoints.DELETE_TICKET(ticketId), {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      alert("Ticket deleted successfully.");
-      fetchTickets(); // Refresh tickets
-    } catch (error) {
-      console.error("Error deleting ticket:", error.message);
-    }
-  };
-
   return (
     <div>
       <h2>User Dashboard</h2>
-      <button onClick={handleCreateTicket}>Create Ticket</button>
       <button onClick={handleLogout}>Logout</button>
-      <button onClick={fetchTickets}>See Tickets</button>
 
-      {showCreateTicket && <CreateTicket />}
+      {/* Create Ticket Section */}
+      <div>
+        <CreateTicket />
+      </div>
 
-      {showTickets && (
-        <div>
-          <h2>Your Tickets</h2>
-          {tickets.length > 0 ? (
-            <ul>
-              {tickets.map((ticket) => (
-                <li key={ticket._id}>
-                  <strong>Title:</strong> {ticket.title} <br />
-                  <strong>Status:</strong> {ticket.status} <br />
-                  <button onClick={() => fetchTicketDetails(ticket._id)}>
-                    View Details
-                  </button>
-                  <button onClick={() => deleteTicket(ticket._id)}>
-                    Delete
-                  </button>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p>No tickets found.</p>
-          )}
-        </div>
-      )}
+      {/* Tickets Section */}
+      <div>
+        <h3>My Tickets</h3>
+        {tickets.length > 0 ? (
+          <ul>
+            {tickets.map((ticket) => (
+              <li key={ticket._id}>
+                <strong>Title:</strong> {ticket.title} <br />
+                <strong>Status:</strong> {ticket.status} <br />
+                <button onClick={() => fetchTicketDetails(ticket._id)}>
+                  View Details
+                </button>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>No tickets found.</p>
+        )}
+      </div>
 
+      {/* Ticket Details Section */}
       {selectedTicket && (
         <div>
           <h2>Ticket Details</h2>

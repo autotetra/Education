@@ -49,7 +49,7 @@ function Login() {
 
   return (
     <div>
-      <h2>Login</h2>
+      <h3>Login</h3>
       <form onSubmit={handleLogin}>
         <div>
           <label>Email</label>

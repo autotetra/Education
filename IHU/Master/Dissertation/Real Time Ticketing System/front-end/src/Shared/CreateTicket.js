@@ -31,7 +31,7 @@ function CreateTicket() {
 
   return (
     <div>
-      <h2>Create a Ticket</h2>
+      <h3>Create a Ticket</h3>
       <form onSubmit={handleSubmit}>
         <div>
           <label>Title:</label>
