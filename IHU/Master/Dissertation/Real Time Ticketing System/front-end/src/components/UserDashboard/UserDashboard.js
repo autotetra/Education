@@ -3,7 +3,6 @@ import CreateTicket from "../../Shared/CreateTicket";
 import endpoints from "../../api/endpoints";
 import axios from "axios";
 import io from "socket.io-client";
-import styles from "./UserDashboard.module.css";
 
 function UserDashboard() {
   const [tickets, setTickets] = useState([]);
@@ -89,23 +88,32 @@ function UserDashboard() {
 
   return (
     <div>
-      <h3 className={styles.header}>User Dashboard</h3>
-      <button onClick={handleLogout} className={styles.logoutButton}>
+      {/* Logout Button */}
+      <button onClick={handleLogout} className="logoutButton">
         Logout
       </button>
-      <hr className={styles.divider} />
 
-      <div className={styles.createTicketSection}>
+      {/* Header */}
+      <header className="dashboardHeader">
+        <h3>User Dashboard</h3>
+      </header>
+      <hr className="divider" />
+
+      {/* Create Ticket Section */}
+      <div className="createTicketSection">
         <CreateTicket />
       </div>
-      <hr className={styles.divider} />
-      <div className={styles.dashboardContainer}>
-        <div className={styles.ticketsList}>
-          <h3>My Tickets</h3>
+      <hr className="divider" />
+
+      {/* Tickets and Details */}
+      <div className="dashboardContainer">
+        {/* My Tickets Section */}
+        <div className="ticketsList">
+          <h3 className="sectionHeader">My Tickets</h3>
           {tickets.length > 0 ? (
-            <ul className={styles.ticketList}>
+            <ul className="ticketList">
               {tickets.map((ticket) => (
-                <li key={ticket._id} className={styles.ticketItem}>
+                <li key={ticket._id} className="ticketItem">
                   <strong>Title:</strong> {ticket.title} <br />
                   <strong>Status:</strong> {ticket.status} <br />
                   <button onClick={() => fetchTicketDetails(ticket._id)}>
@@ -119,8 +127,9 @@ function UserDashboard() {
           )}
         </div>
 
-        <div className={styles.ticketDetails}>
-          <h3>Ticket Details</h3>
+        {/* Ticket Details Section */}
+        <div className="ticketDetails">
+          <h3 className="sectionHeader">Ticket Details</h3>
           {selectedTicket ? (
             <>
               <p>

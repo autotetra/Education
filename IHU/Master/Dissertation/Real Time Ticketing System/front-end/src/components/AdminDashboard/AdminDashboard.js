@@ -3,7 +3,6 @@ import axios from "axios";
 import endpoints from "../../api/endpoints";
 import CreateTicket from "../../Shared/CreateTicket";
 import io from "socket.io-client";
-import styles from "./AdminDashboard.module.css";
 
 const handleLogout = () => {
   localStorage.clear();
@@ -150,31 +149,31 @@ function AdminDashboard() {
   return (
     <div>
       {/* Logout Button */}
-      <button onClick={handleLogout} className={styles.logoutButton}>
+      <button onClick={handleLogout} className="logoutButton">
         Logout
       </button>
 
       {/* Header */}
-      <header className={styles.header}>
+      <header className="dashboardHeader">
         <h3>Admin Dashboard</h3>
       </header>
-      <hr className={styles.divider} />
+      <hr className="divider" />
 
       {/* Create Ticket Section */}
-      <div className={styles.createTicketSection}>
+      <div className="createTicketSection">
         <CreateTicket />
       </div>
-      <hr className={styles.divider} />
+      <hr className="divider" />
 
       {/* Tickets and Details */}
-      <div className={styles.ticketsContainer}>
+      <div className="dashboardContainer">
         {/* Ticket List Section */}
-        <div className={styles.ticketList}>
-          <h3 className={styles.sectionHeader}>Ticket List</h3>
-          <ul>
+        <div className="ticketsList">
+          <h3 className="sectionHeader">Ticket List</h3>
+          <ul className="ticketList">
             {tickets.length > 0 ? (
               tickets.map((ticket) => (
-                <li key={ticket._id}>
+                <li key={ticket._id} className="ticketItem">
                   <strong>Title:</strong> {ticket.title}
                   <br />
                   <strong>Status:</strong>{" "}
@@ -204,10 +203,10 @@ function AdminDashboard() {
         </div>
 
         {/* Ticket Details Section */}
-        <div className={styles.ticketDetails}>
-          <h3 className={styles.sectionHeader}>Ticket Details</h3>
+        <div className="ticketDetails">
+          <h3 className="sectionHeader">Ticket Details</h3>
           {selectedTicket ? (
-            <>
+            <div>
               <p>
                 <strong>Title:</strong> {selectedTicket.title}
               </p>
@@ -224,7 +223,7 @@ function AdminDashboard() {
                 <strong>Created By:</strong>{" "}
                 {selectedTicket.createdBy?.username || "N/A"}
               </p>
-            </>
+            </div>
           ) : (
             <p>Select a ticket to view details</p>
           )}

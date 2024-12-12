@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import endpoints from "../../api/endpoints";
 import io from "socket.io-client";
-import styles from "./AgentDashboard.module.css";
 
 const handleLogout = () => {
   localStorage.clear();
@@ -124,23 +123,25 @@ function AgentDashboard() {
 
   return (
     <div>
-      {/* Header Section */}
-      <header className={styles.header}>
-        <h3>Agent Dashboard</h3>
-        <button onClick={handleLogout} className={styles.logoutButton}>
-          Logout
-        </button>
-      </header>
-      <hr className={styles.divider} />
+      {/* Logout Button */}
+      <button onClick={handleLogout} className="logoutButton">
+        Logout
+      </button>
 
-      {/* Main Dashboard Container */}
-      <div className={styles.dashboardContainer}>
+      {/* Header Section */}
+      <header className="dashboardHeader">
+        <h3>Agent Dashboard</h3>
+      </header>
+      <hr className="divider" />
+
+      {/* Dashboard Content */}
+      <div className="dashboardContainer">
         {/* Assigned Tickets Section */}
-        <div className={styles.ticketsList}>
-          <h3>Assigned Tickets</h3>
-          <ul className={styles.ticketList}>
+        <div className="ticketsList">
+          <h3 className="sectionHeader">Assigned Tickets</h3>
+          <ul className="ticketList">
             {tickets.map((ticket) => (
-              <li key={ticket._id} className={styles.ticketItem}>
+              <li key={ticket._id} className="ticketItem">
                 <strong>Title:</strong> {ticket.title} <br />
                 <strong>Status:</strong>{" "}
                 <select
@@ -163,8 +164,8 @@ function AgentDashboard() {
         </div>
 
         {/* Ticket Details Section */}
-        <div className={styles.ticketDetails}>
-          <h3>Ticket Details</h3>
+        <div className="ticketDetails">
+          <h3 className="sectionHeader">Ticket Details</h3>
           {selectedTicket ? (
             <div>
               <p>

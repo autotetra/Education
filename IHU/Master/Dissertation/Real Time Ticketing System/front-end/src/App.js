@@ -7,6 +7,7 @@ import AdminRoute from "./components//AdminDashboard/AdminRoute";
 import AdminDashboard from "./components/AdminDashboard/AdminDashboard";
 import AgentDashboard from "./components/AgentDashboard/AgentDashboard";
 import AgentRoute from "./components/AgentDashboard/AgentRoute";
+import "./styles/global.css";
 // Test component
 import WebSocketTest from "./components/clipboard/[TEST]websocket";
 

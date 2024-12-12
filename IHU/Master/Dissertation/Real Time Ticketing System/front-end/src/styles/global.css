@@ -1,0 +1,70 @@
+/* General Reset and Defaults */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
+
+/* Header Section */
+.dashboardHeader {
+  text-align: center;
+  font-size: 24px;
+  margin: 20px 0;
+}
+
+/* Logout Button */
+.logoutButton {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+}
+
+/* Divider Line */
+.divider {
+  margin: 20px 0;
+  border: none;
+  border-top: 1px solid #000;
+}
+
+/* Dashboard Layout */
+.dashboardContainer {
+  display: flex;
+  justify-content: space-between;
+  margin: 20px;
+  gap: 20px;
+}
+
+/* Tickets List Section */
+.ticketsList {
+  flex: 1;
+  margin-left: 3%;
+}
+
+/* Ticket Details Section */
+.ticketDetails {
+  flex: 1;
+  margin-right: 3%;
+}
+
+/* Create Ticket Section */
+.createTicketSection {
+  margin-left: 5%;
+  width: 90%;
+}
+
+/* General Ticket List */
+.ticketList {
+  padding: 0;
+  margin: 0;
+}
+
+.ticketItem {
+  margin-bottom: 15px;
+}
+
+/* Section Headers */
+.sectionHeader {
+  text-align: left;
+  font-size: 18px;
+  margin-bottom: 10px;
+}
