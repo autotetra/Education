@@ -112,14 +112,19 @@ function UserDashboard() {
           <h3 className="sectionHeader">My Tickets</h3>
           {tickets.length > 0 ? (
             <ul className="ticketList">
-              {tickets.map((ticket) => (
-                <li key={ticket._id} className="ticketItem">
-                  <strong>Title:</strong> {ticket.title} <br />
-                  <strong>Status:</strong> {ticket.status} <br />
-                  <button onClick={() => fetchTicketDetails(ticket._id)}>
-                    View Details
-                  </button>
-                </li>
+              {tickets.map((ticket, index) => (
+                <React.Fragment key={ticket._id}>
+                  <li className="ticketItem">
+                    <strong>Title:</strong> {ticket.title} <br />
+                    <strong>Status:</strong> {ticket.status} <br />
+                    <button onClick={() => fetchTicketDetails(ticket._id)}>
+                      View Details
+                    </button>
+                  </li>
+                  {index !== tickets.length - 1 && (
+                    <hr className="ticketItemDivider" />
+                  )}
+                </React.Fragment>
               ))}
             </ul>
           ) : (

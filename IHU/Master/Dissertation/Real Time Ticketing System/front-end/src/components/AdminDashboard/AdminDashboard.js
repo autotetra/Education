@@ -172,29 +172,34 @@ function AdminDashboard() {
           <h3 className="sectionHeader">Ticket List</h3>
           <ul className="ticketList">
             {tickets.length > 0 ? (
-              tickets.map((ticket) => (
-                <li key={ticket._id} className="ticketItem">
-                  <strong>Title:</strong> {ticket.title}
-                  <br />
-                  <strong>Status:</strong>{" "}
-                  <select
-                    value={ticket.status}
-                    onChange={(e) =>
-                      handleUpdateTicket(ticket._id, e.target.value)
-                    }
-                  >
-                    <option value="Waiting">Waiting</option>
-                    <option value="In Progress">In Progress</option>
-                    <option value="Resolved">Resolved</option>
-                  </select>
-                  <br />
-                  <button onClick={() => fetchTicketDetails(ticket._id)}>
-                    View Details
-                  </button>
-                  <button onClick={() => deleteTicket(ticket._id)}>
-                    Delete
-                  </button>
-                </li>
+              tickets.map((ticket, index) => (
+                <React.Fragment key={ticket._id}>
+                  <li className="ticketItem">
+                    <strong>Title:</strong> {ticket.title}
+                    <br />
+                    <strong>Status:</strong>{" "}
+                    <select
+                      value={ticket.status}
+                      onChange={(e) =>
+                        handleUpdateTicket(ticket._id, e.target.value)
+                      }
+                    >
+                      <option value="Waiting">Waiting</option>
+                      <option value="In Progress">In Progress</option>
+                      <option value="Resolved">Resolved</option>
+                    </select>
+                    <br />
+                    <button onClick={() => fetchTicketDetails(ticket._id)}>
+                      View Details
+                    </button>
+                    <button onClick={() => deleteTicket(ticket._id)}>
+                      Delete
+                    </button>
+                  </li>
+                  {index !== tickets.length - 1 && (
+                    <hr className="ticketItemDivider" /> /* Add divider after each ticket */
+                  )}
+                </React.Fragment>
               ))
             ) : (
               <p>No tickets available</p>

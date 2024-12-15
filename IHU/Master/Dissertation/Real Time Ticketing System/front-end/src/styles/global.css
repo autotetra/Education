@@ -1,3 +1,41 @@
+/* ----------Homepage--------- */
+/* Home Container Layout */
+.homeContainer {
+  display: flex;
+  justify-content: center; /* Center columns horizontally */
+  gap: 50px; /* Add space between Login and Register sections */
+  margin-top: 20px;
+}
+
+/* Form Section: Unique to Login and Register */
+.formSection {
+  flex: 0 0 30%; /* Each column takes 30% of the width */
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center content horizontally */
+}
+
+/* Unique Form Group: Label and Input Alignment */
+.formGroupUnique {
+  display: flex;
+  flex-direction: column; /* Stack label and input vertically */
+  margin-bottom: 15px; /* Space between fields */
+  width: 100%; /* Full width inputs */
+}
+
+.formGroupUnique label {
+  margin-bottom: 5px; /* Space between label and input */
+  text-align: left;
+}
+
+/* Unique Buttons */
+.buttonUnique {
+  margin-top: 10px; /* Add spacing above button */
+  cursor: pointer;
+  font-weight: bold;
+  width: 100%; /* Make button full width */
+}
+
 /* ----------Common Code---------- */
 body {
   margin: 0;
@@ -8,7 +46,7 @@ body {
 /* Header Section */
 .dashboardHeader {
   text-align: center;
-  font-size: 24px;
+  font-size: 20px;
   margin: 20px 0;
 }
 
@@ -21,9 +59,10 @@ body {
 
 /* Divider Line */
 .divider {
-  margin: 20px 0;
+  margin: 20px auto; /* Center the divider horizontally with vertical spacing */
   border: none;
-  border-top: 1px solid #000;
+  border-top: 1px solid #ccc; /* Light gray color */
+  width: 80%; /* Limit the width to 80% of the container */
 }
 
 /* Dashboard Layout */
@@ -34,26 +73,16 @@ body {
   gap: 20px;
 }
 
-/* Tickets List Section */
-.ticketsList {
-  flex: 1;
-  margin-left: 3%;
-}
-
 /* Ticket Details Section */
 .ticketDetails {
   flex: 1;
   margin-right: 3%;
 }
 
-/* General Ticket List */
-.ticketList {
-  padding: 0;
-  margin: 0;
-}
-
-.ticketItem {
-  margin-bottom: 15px;
+/* Create Ticket Section */
+.createTicketSection {
+  margin-left: 5%;
+  width: 90%;
 }
 
 /* Section Headers */
@@ -64,12 +93,6 @@ body {
 }
 
 /* ----------Create Ticket Component--------- */
-/* Positioning only: Labels on top of fields */
-/* Create Ticket Section */
-.createTicketSection {
-  margin-left: 5%;
-  width: 90%;
-}
 
 .formGroup {
   display: flex;
@@ -85,4 +108,45 @@ body {
 .createTicketForm {
   width: 33%; /* One-third of the parent container */
   mmargin-left: 5%;
+}
+
+/* ----------Ticket List Component--------- */
+
+/* Tickets List Section */
+.ticketsList {
+  flex: 1;
+  margin-left: 3%; /* Restore left margin */
+}
+
+/* General Ticket List */
+.ticketList {
+  list-style: none; /* Remove bullets */
+  padding: 0;
+  margin: 0;
+}
+
+.ticketItem {
+  margin-bottom: 15px; /* Add space between rows */
+}
+
+.ticketItem strong {
+  display: inline-block; /* Align "Title" and "Status" inline */
+  margin-bottom: 5px; /* Small spacing under each title/status row */
+}
+
+.ticketItem select {
+  margin-bottom: 10px; /* Space below dropdown */
+}
+
+.ticketItem button {
+  margin-right: 10px; /* Add space between buttons */
+  margin-top: 5px; /* Small top spacing to align buttons better */
+}
+
+/* Ticket Item Divider Line */
+.ticketItemDivider {
+  margin: 20px 0; /* Vertical spacing only */
+  border: none;
+  border-top: 1px solid #ccc; /* Light gray color */
+  width: 80%; /* Keep the width at 80% of the container */
 }

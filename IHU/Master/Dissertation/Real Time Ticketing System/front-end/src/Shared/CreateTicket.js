@@ -2,11 +2,16 @@ import React, { useState } from "react";
 import axios from "axios";
 import endpoints from "../api/endpoints";
 
-function CreateTicket() {
+function CreateTicket({ onTicketCreated }) {
+  // State for form fields
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
 
+  // State for success message
+  const [successMessage, setSuccessMessage] = useState("");
+
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -14,24 +19,52 @@ function CreateTicket() {
     const token = localStorage.getItem("token");
 
     try {
+      // Send the POST request to create a ticket
       const response = await axios.post(endpoints.CREATE_TICKET, data, {
         headers: {
-          Authorization: `Bearer ${token}`, // Add authorization header
+          Authorization: `Bearer ${token}`,
         },
       });
-      console.log(response.data); // Log the success message
-    } catch (error) {
-      if (error.response) {
-        console.error(error.response.data.message); // Backend error
-      } else {
-        console.error("Network or server error:", error.message); // Frontend error
+
+      // Show success message
+      setSuccessMessage("Ticket created successfully!");
+
+      // Clear form fields
+      setTitle(""); // Clear Title
+      setDescription(""); // Clear Description
+      setCategory(""); // Clear Category
+
+      // Remove success message after 3 seconds
+      setTimeout(() => setSuccessMessage(""), 3000);
+
+      // Notify parent component if needed
+      if (onTicketCreated) {
+        onTicketCreated(response.data.message);
       }
+    } catch (error) {
+      console.error("Error creating ticket:", error.message);
     }
   };
 
   return (
-    <div className="createTicketForm">
+    <div className="createTicketForm" style={{ position: "relative" }}>
       <h3>Create a Ticket</h3>
+
+      {/* Success Message */}
+      {successMessage && (
+        <div
+          style={{
+            position: "absolute",
+            top: "0", // Align to the top of the form
+            right: "-220px", // Adjust this value for spacing to the right
+            whiteSpace: "nowrap", // Prevent wrapping
+          }}
+        >
+          {successMessage}
+        </div>
+      )}
+
+      {/* Form */}
       <form onSubmit={handleSubmit}>
         <div className="formGroup">
           <label>Title:</label>

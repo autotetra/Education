@@ -140,25 +140,30 @@ function AgentDashboard() {
         <div className="ticketsList">
           <h3 className="sectionHeader">Assigned Tickets</h3>
           <ul className="ticketList">
-            {tickets.map((ticket) => (
-              <li key={ticket._id} className="ticketItem">
-                <strong>Title:</strong> {ticket.title} <br />
-                <strong>Status:</strong>{" "}
-                <select
-                  value={ticket.status}
-                  onChange={(e) =>
-                    handleUpdateTicket(ticket._id, e.target.value)
-                  }
-                >
-                  <option value="Waiting">Waiting</option>
-                  <option value="In Progress">In Progress</option>
-                  <option value="Resolved">Resolved</option>
-                </select>
-                <br />
-                <button onClick={() => fetchTicketDetails(ticket._id)}>
-                  View Details
-                </button>
-              </li>
+            {tickets.map((ticket, index) => (
+              <React.Fragment key={ticket._id}>
+                <li className="ticketItem">
+                  <strong>Title:</strong> {ticket.title} <br />
+                  <strong>Status:</strong>{" "}
+                  <select
+                    value={ticket.status}
+                    onChange={(e) =>
+                      handleUpdateTicket(ticket._id, e.target.value)
+                    }
+                  >
+                    <option value="Waiting">Waiting</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Resolved">Resolved</option>
+                  </select>
+                  <br />
+                  <button onClick={() => fetchTicketDetails(ticket._id)}>
+                    View Details
+                  </button>
+                </li>
+                {index !== tickets.length - 1 && (
+                  <hr className="ticketItemDivider" />
+                )}
+              </React.Fragment>
             ))}
           </ul>
         </div>
