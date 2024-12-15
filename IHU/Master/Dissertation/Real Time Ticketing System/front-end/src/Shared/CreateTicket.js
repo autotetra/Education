@@ -30,10 +30,10 @@ function CreateTicket() {
   };
 
   return (
-    <div>
+    <div className="createTicketForm">
       <h3>Create a Ticket</h3>
       <form onSubmit={handleSubmit}>
-        <div>
+        <div className="formGroup">
           <label>Title:</label>
           <input
             type="text"
@@ -42,7 +42,7 @@ function CreateTicket() {
             required
           />
         </div>
-        <div>
+        <div className="formGroup">
           <label>Description:</label>
           <textarea
             value={description}
@@ -50,8 +50,8 @@ function CreateTicket() {
             required
           ></textarea>
         </div>
-        <div>
-          <label>Category</label>
+        <div className="formGroup">
+          <label>Category:</label>
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}

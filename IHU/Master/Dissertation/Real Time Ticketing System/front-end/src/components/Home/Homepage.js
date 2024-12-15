@@ -16,13 +16,11 @@ function Home() {
       <div className={styles.homeContainer}>
         {/* Login Section */}
         <div className={styles.loginSection}>
-          <h3>Login</h3>
           <Login />
         </div>
 
         {/* Register Section */}
         <div className={styles.registerSection}>
-          <h3>Register</h3>
           <Register />
         </div>
       </div>
