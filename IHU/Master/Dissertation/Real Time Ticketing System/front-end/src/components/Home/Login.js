@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import endpoints from "../../api/endpoints";
 import { useNavigate } from "react-router-dom";
+import "../../styles/global.css";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -48,28 +49,32 @@ function Login() {
   };
 
   return (
-    <div>
-      <h3>Login</h3>
-      <form onSubmit={handleLogin}>
-        <div>
-          <label>Email</label>
+    <div className="loginContainer">
+      <h3 className="loginHeader">Login</h3>
+      <form onSubmit={handleLogin} className="loginForm">
+        <div className="formGroupLogin">
+          <label className="loginLabel">Email:</label>
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
+            className="loginInput"
           />
         </div>
-        <div>
-          <label>Password</label>
+        <div className="formGroupLogin">
+          <label className="loginLabel">Password:</label>
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
+            className="loginInput"
           />
         </div>
-        <button type="submit">Login</button>
+        <button type="submit" className="loginButton">
+          Login
+        </button>
       </form>
     </div>
   );
