@@ -71,6 +71,12 @@
   margin-top: 10px; /* Προσθέτουμε ένα κενό πάνω από το button */
 }
 
+.registerMessage {
+  margin-top: 10px;
+  color: green; /* Change to red for error messages */
+  font-weight: bold;
+}
+
 /* ----------Common Code---------- */
 
 body {

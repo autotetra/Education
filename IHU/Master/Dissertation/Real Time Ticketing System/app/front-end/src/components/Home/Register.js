@@ -7,7 +7,7 @@ function Register() {
   const [username, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate(); // Initialize navigate
+  const [message, setMessage] = useState("");
 
   const handleRegister = (e) => {
     e.preventDefault();
@@ -19,7 +19,19 @@ function Register() {
       })
       .then((response) => {
         console.log("Registration successful:", response.data);
-        navigate("/"); // Redirect to the dashboard
+
+        // Display success message
+        setMessage("Registration successful!");
+
+        // Clear form fields
+        setUserName("");
+        setEmail("");
+        setPassword("");
+
+        // Clear the message after 3 seconds
+        setTimeout(() => {
+          setMessage("");
+        }, 3000);
       })
       .catch((error) => {
         if (error.response && error.response.data.message) {
@@ -68,6 +80,8 @@ function Register() {
           Register
         </button>
       </form>
+      {/* Display the success or error message */}
+      {message && <p className="registerMessage">{message}</p>}
     </div>
   );
 }
