@@ -43,6 +43,33 @@
   margin-top: 10px; /* Προσθέτουμε ένα κενό πάνω από το button */
 }
 
+.loginErrorMessage {
+  color: red;
+  font-size: 14px;
+  margin-top: 10px;
+  text-align: center;
+}
+
+/* Dashboards Header */
+.dashboardHeader {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr; /* Distribute space equally */
+  align-items: center; /* Vertically align items */
+  padding: 10px 20px; /* Add padding to header */
+}
+
+.headerLeft {
+  text-align: left; /* Align text to the left */
+}
+
+.headerCenter {
+  text-align: center; /* Align text to the center */
+  justify-self: center; /* Keep it in the center of the grid */
+}
+
+.logoutButton {
+  justify-self: end; /* Align button to the right */
+}
 /* Align Register Form */
 .registerForm {
   display: flex;
@@ -83,20 +110,6 @@ body {
   margin: 0;
   padding: 0;
   font-family: Arial, sans-serif;
-}
-
-/* Header Section */
-.dashboardHeader {
-  text-align: center;
-  font-size: 20px;
-  margin: 20px 0;
-}
-
-/* Logout Button */
-.logoutButton {
-  position: fixed;
-  top: 10px;
-  right: 10px;
 }
 
 /* Divider Line */

@@ -7,13 +7,13 @@ import "../../styles/global.css";
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate(); // Initialize navigate
+  const navigate = useNavigate();
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
       console.log("Account is already logged in");
-      // Navigate to a protected page or perform some other action
     }
   }, []);
 
@@ -25,7 +25,7 @@ function Login() {
         password: password,
       })
       .then((response) => {
-        console.log("Login successful:", response.data); // Log the response data
+        console.log("Login successful:", response.data);
         const { token, account } = response.data;
         localStorage.setItem("token", token);
         localStorage.setItem("role", account.role);
@@ -43,7 +43,9 @@ function Login() {
           error.response.data &&
           error.response.data.message
         ) {
-          console.error("Login error:", error.response.data.message); // Display error message from backend
+          alert(error.response.data.message);
+        } else {
+          alert("An unexpected error occurred.");
         }
       });
   };
@@ -75,6 +77,9 @@ function Login() {
         <button type="submit" className="loginButton">
           Login
         </button>
+        {errorMessage && (
+          <div className="loginErrorMessage">{errorMessage}</div>
+        )}
       </form>
     </div>
   );

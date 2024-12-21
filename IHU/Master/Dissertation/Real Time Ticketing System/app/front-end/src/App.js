@@ -8,8 +8,6 @@ import AdminDashboard from "./components/AdminDashboard/AdminDashboard";
 import AgentDashboard from "./components/AgentDashboard/AgentDashboard";
 import AgentRoute from "./components/AgentDashboard/AgentRoute";
 import "./styles/global.css";
-// Test component
-import WebSocketTest from "./components/clipboard/[TEST]websocket";
 
 function App() {
   return (
@@ -40,7 +38,6 @@ function App() {
             </AdminRoute>
           }
         />
-        <Route path="/test-websocket" element={<WebSocketTest />} />
       </Routes>
     </Router>
   );

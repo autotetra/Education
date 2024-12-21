@@ -7,51 +7,47 @@ import io from "socket.io-client";
 function UserDashboard() {
   const [tickets, setTickets] = useState([]);
   const [selectedTicket, setSelectedTicket] = useState(null);
+  const [username, setUsername] = useState("");
 
   useEffect(() => {
+    // Get username
+    const account = JSON.parse(localStorage.getItem("account"));
+    if (account && account.username) {
+      setUsername(account.username);
+    }
+
     // Initialize WebSocket connection
     const socket = io("http://localhost:8000");
-    console.log("WebSocket initialized:", socket);
 
-    // On connect, log socket ID
+    // Log connection ID when WebSocket connects
     socket.on("connect", () => {
       console.log("WebSocket connected with ID:", socket.id);
     });
 
     // Listen for the "statusUpdated" event
     socket.on("statusUpdated", (updatedTicket) => {
-      console.log("Event received in UserDashboard:", updatedTicket);
       if (!updatedTicket) {
         console.error("No data received for statusUpdated event");
         return;
       }
 
-      // Debug previous state
-      console.log("Previous tickets:", tickets);
-
+      // Update tickets in state
       setTickets((prevTickets) =>
         prevTickets.map((ticket) =>
           ticket._id === updatedTicket._id ? updatedTicket : ticket
         )
       );
-
-      // Debug updated state (state changes are asynchronous)
-      setTimeout(() => {
-        console.log("Updated tickets state:", tickets);
-      }, 1000);
     });
 
-    // Cleanup
+    // Fetch tickets on component mount
+    fetchTickets();
+
+    // Cleanup function to disconnect the socket
     return () => {
       socket.disconnect();
       console.log("WebSocket disconnected");
     };
-  }, []);
-
-  useEffect(() => {
-    // Fetch tickets on mount
-    fetchTickets();
-  }, []);
+  }, []); // Runs only once on component mount
 
   const handleLogout = () => {
     localStorage.clear();
@@ -88,14 +84,12 @@ function UserDashboard() {
 
   return (
     <div>
-      {/* Logout Button */}
-      <button onClick={handleLogout} className="logoutButton">
-        Logout
-      </button>
-
-      {/* Header */}
       <header className="dashboardHeader">
-        <h3>User Dashboard</h3>
+        <div className="headerLeft">Welcome, [Username]</div>
+        <h3 className="headerCenter">User Dashboard</h3>
+        <button className="logoutButton" onClick={handleLogout}>
+          Logout
+        </button>
       </header>
       <hr className="divider" />
 
