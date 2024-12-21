@@ -51,20 +51,26 @@
 }
 
 /* Dashboards Header */
+.homeHeader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
 .dashboardHeader {
   display: grid;
-  grid-template-columns: 1fr auto 1fr; /* Distribute space equally */
-  align-items: center; /* Vertically align items */
-  padding: 10px 20px; /* Add padding to header */
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: 10px 20px;
 }
 
 .headerLeft {
-  text-align: left; /* Align text to the left */
+  text-align: left;
 }
 
 .headerCenter {
-  text-align: center; /* Align text to the center */
-  justify-self: center; /* Keep it in the center of the grid */
+  text-align: center;
+  justify-self: center;
 }
 
 .logoutButton {

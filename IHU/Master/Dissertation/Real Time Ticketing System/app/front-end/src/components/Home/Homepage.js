@@ -6,7 +6,7 @@ function Home() {
   return (
     <div>
       {/* Header */}
-      <header className="dashboardHeader">
+      <header className="homeHeader">
         <h3>Welcome to the Ticketing System</h3>
       </header>
       <hr className="divider" />

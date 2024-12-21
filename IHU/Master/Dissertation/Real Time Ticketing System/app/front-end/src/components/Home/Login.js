@@ -29,6 +29,7 @@ function Login() {
         const { token, account } = response.data;
         localStorage.setItem("token", token);
         localStorage.setItem("role", account.role);
+        localStorage.setItem("username", account.username);
         if (account.role === "admin") {
           navigate("/admin-dashboard");
         } else if (account.role === "user") {

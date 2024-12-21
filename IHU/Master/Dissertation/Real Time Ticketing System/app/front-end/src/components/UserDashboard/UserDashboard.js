@@ -10,11 +10,9 @@ function UserDashboard() {
   const [username, setUsername] = useState("");
 
   useEffect(() => {
-    // Get username
-    const account = JSON.parse(localStorage.getItem("account"));
-    if (account && account.username) {
-      setUsername(account.username);
-    }
+    // Get username name
+    const username = localStorage.getItem("username");
+    setUsername(username);
 
     // Initialize WebSocket connection
     const socket = io("http://localhost:8000");
@@ -85,7 +83,7 @@ function UserDashboard() {
   return (
     <div>
       <header className="dashboardHeader">
-        <div className="headerLeft">Welcome, [Username]</div>
+        <div className="headerLeft">Welcome, {username || "[Username]"}</div>
         <h3 className="headerCenter">User Dashboard</h3>
         <button className="logoutButton" onClick={handleLogout}>
           Logout
