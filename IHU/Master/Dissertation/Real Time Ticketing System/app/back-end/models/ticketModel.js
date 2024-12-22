@@ -13,8 +13,8 @@ const ticketSchema = mongoose.Schema({
   status: {
     type: String,
     required: true,
-    enum: ["Waiting", "In-Progress", "Closed"], // Available options
-    default: "Waiting", // Default status
+    enum: ["Waiting", "In-Progress", "Closed"],
+    default: "Waiting",
   },
   category: {
     type: String,
@@ -23,7 +23,7 @@ const ticketSchema = mongoose.Schema({
   },
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Account", // Reference the user / agent schema
+    ref: "Account",
     required: true,
   },
 });

@@ -9,39 +9,23 @@ const router = express.Router();
 // Create new ticket
 router.post("/create", authenticateJWT, async (req, res) => {
   try {
-    console.log("Received Payload:", req.body);
-
     // Extract fields from the request body
     const { title, description, category } = req.body;
-    const userId = req.user.id; // Extract user ID from decoded token in middleware
-
-    // Input validation
-    if (!title || !description || !category) {
-      return res.status(400).json({
-        error: "All fields (title, description, category) are required.",
-      });
-    }
+    const userId = req.user.id;
 
     // Create ticket object
     const ticketData = {
       title,
       description,
       category,
-      status: "Waiting", // Default status
-      createdBy: userId, // Attach the logged-in user's ID
+      status: "Waiting",
+      createdBy: userId,
     };
 
     // Send the new ticket data to Kafka
     const messageData = JSON.stringify(ticketData);
     await sendMessage("new-ticket", messageData);
-
-    // Respond with success and ticket details
-    res.status(201).json({
-      message: "Ticket created successfully",
-      ticket: ticketData, // Returning created ticket details
-    });
   } catch (error) {
-    // Error handling
     if (error.message.includes("Kafka")) {
       return res
         .status(503)

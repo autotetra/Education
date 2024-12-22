@@ -43,13 +43,6 @@
   margin-top: 10px; /* Προσθέτουμε ένα κενό πάνω από το button */
 }
 
-.loginErrorMessage {
-  color: red;
-  font-size: 14px;
-  margin-top: 10px;
-  text-align: center;
-}
-
 /* Dashboards Header */
 .homeHeader {
   display: flex;

@@ -2,7 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./components//Home/Homepage";
 import UserRoute from "./components/UserDashboard/UserRoute";
-import Dashboard from "./components/UserDashboard/UserDashboard";
+import UserDashboard from "./components/UserDashboard/UserDashboard";
 import AdminRoute from "./components//AdminDashboard/AdminRoute";
 import AdminDashboard from "./components/AdminDashboard/AdminDashboard";
 import AgentDashboard from "./components/AgentDashboard/AgentDashboard";
@@ -18,7 +18,7 @@ function App() {
           path="/user-dashboard"
           element={
             <UserRoute>
-              <Dashboard />
+              <UserDashboard />
             </UserRoute>
           }
         />

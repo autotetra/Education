@@ -8,7 +8,6 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -78,9 +77,6 @@ function Login() {
         <button type="submit" className="loginButton">
           Login
         </button>
-        {errorMessage && (
-          <div className="loginErrorMessage">{errorMessage}</div>
-        )}
       </form>
     </div>
   );

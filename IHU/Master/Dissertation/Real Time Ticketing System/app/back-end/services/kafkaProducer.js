@@ -22,7 +22,7 @@ const sendMessage = async (topic, messages) => {
       topic: topic,
       messages: [{ value: messages }],
     });
-    console.log(`Message sent to topic ${topic}`);
+    console.log(`Message sent to topic "${topic}"`);
   } catch (error) {
     console.error("Failed to send message: ", error);
   }
