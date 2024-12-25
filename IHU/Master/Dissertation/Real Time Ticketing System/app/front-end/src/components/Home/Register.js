@@ -7,7 +7,6 @@ function Register() {
   const [username, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [message, setMessage] = useState("");
 
   const handleRegister = (e) => {
     e.preventDefault();
@@ -18,26 +17,20 @@ function Register() {
         password: password,
       })
       .then((response) => {
-        console.log("Registration successful:", response.data);
-
         // Display success message
-        setMessage("Registration successful!");
+        alert("Registration successful!");
 
         // Clear form fields
         setUserName("");
         setEmail("");
         setPassword("");
-
-        // Clear the message after 3 seconds
-        setTimeout(() => {
-          setMessage("");
-        }, 3000);
       })
       .catch((error) => {
+        // Display error alert
         if (error.response && error.response.data.message) {
-          console.error("Registration error:", error.response.data.message);
+          alert(`Error: ${error.response.data.message}`);
         } else {
-          console.error("An error occurred:", error.message);
+          alert("An unexpected error occurred.");
         }
       });
   };
@@ -80,8 +73,6 @@ function Register() {
           Register
         </button>
       </form>
-      {/* Display the success or error message */}
-      {message && <p className="registerMessage">{message}</p>}
     </div>
   );
 }

@@ -5,48 +5,59 @@ import io from "socket.io-client";
 
 const handleLogout = () => {
   localStorage.clear();
-  window.location.href = "/"; // Redirect to homepage
+  window.location.href = "/";
 };
 
 function AgentDashboard() {
   const [tickets, setTickets] = useState([]);
   const [selectedTicket, setSelectedTicket] = useState(null);
   const [socket, setSocket] = useState(null);
+  const [username, setUsername] = useState("");
 
   useEffect(() => {
+    // Get username
+    const username = localStorage.getItem("username");
+    setUsername(username);
+
     // Initialize WebSocket connection
-    const newSocket = io("http://localhost:8000");
-    setSocket(newSocket);
+    const socket = io("http://localhost:8000");
+    setSocket(socket);
+
+    // Log connection ID when WebSocket connects
+    socket.on("connect", () => {
+      console.log("WebSocket connected with ID:", socket.id);
+    });
 
     // Listen for the "statusUpdated" event
-    newSocket.on("statusUpdated", (updatedTicket) => {
-      console.log("Event received in AgentDashboard:", updatedTicket);
+    socket.on("statusUpdated", (updatedTicket) => {
       if (!updatedTicket) {
         console.error("No data received for statusUpdated event");
         return;
       }
 
+      // Update tickets in list
       setTickets((prevTickets) =>
         prevTickets.map((ticket) =>
           ticket._id === updatedTicket._id ? updatedTicket : ticket
         )
       );
 
-      // Debug updated state
-      setTimeout(() => {
-        console.log("Updated tickets state in AgentDashboard:", tickets);
-      }, 1000);
+      // Update the selected ticket if it matches the updated ticket
+      setSelectedTicket((prevSelected) =>
+        prevSelected && prevSelected._id === updatedTicket._id
+          ? updatedTicket
+          : prevSelected
+      );
     });
 
-    return () => {
-      newSocket.disconnect();
-      console.log("WebSocket disconnected in AgentDashboard");
-    };
-  }, []);
-
-  useEffect(() => {
     // Fetch tickets on mount
     fetchTickets();
+
+    // Cleanup function
+    return () => {
+      socket.disconnect();
+      console.log("WebSocket disconnected");
+    };
   }, []);
 
   // Fetch all tickets assigned to the agent
@@ -123,14 +134,12 @@ function AgentDashboard() {
 
   return (
     <div>
-      {/* Logout Button */}
-      <button onClick={handleLogout} className="logoutButton">
-        Logout
-      </button>
-
-      {/* Header Section */}
       <header className="dashboardHeader">
-        <h3>Agent Dashboard</h3>
+        <div className="headerLeft">Welcome, {username || "[Username]"}</div>
+        <h3 className="headerCenter">Agent Dashboard</h3>
+        <button className="logoutButton" onClick={handleLogout}>
+          Logout
+        </button>
       </header>
       <hr className="divider" />
 

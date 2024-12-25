@@ -6,28 +6,37 @@ import io from "socket.io-client";
 
 const handleLogout = () => {
   localStorage.clear();
-  window.location.href = "/"; // Redirect to homepage
+  window.location.href = "/";
 };
 
 function AdminDashboard() {
   const [tickets, setTickets] = useState([]);
   const [selectedTicket, setSelectedTicket] = useState(null);
   const [socket, setSocket] = useState(null);
+  const [username, setUsername] = useState("");
 
-  // Initialize WebSocket connection
   useEffect(() => {
-    const newSocket = io("http://localhost:8000"); // WebSocket server
-    setSocket(newSocket);
+    // Get username
+    const username = localStorage.getItem("username");
+    setUsername(username);
 
-    // Subscribe to statusUpdated events
-    newSocket.on("statusUpdated", (updatedTicket) => {
-      console.log("Event received in AdminDashboard:", updatedTicket);
+    // Initialize WebSocket connection
+    const socket = io("http://localhost:8000"); // WebSocket server
+    setSocket(socket);
+
+    // Log connection ID when WebSocket connects
+    socket.on("connect", () => {
+      console.log("WebSocket connected with ID:", socket.id);
+    });
+
+    // Listen for the "statusUpdated" event
+    socket.on("statusUpdated", (updatedTicket) => {
       if (!updatedTicket) {
         console.error("No data received for statusUpdated event");
         return;
       }
 
-      // Update the ticket list dynamically
+      // Update tickets list
       setTickets((prevTickets) =>
         prevTickets.map((ticket) =>
           ticket._id === updatedTicket._id ? updatedTicket : ticket
@@ -40,22 +49,16 @@ function AdminDashboard() {
           ? updatedTicket
           : prevSelected
       );
-
-      // Debug updated state
-      setTimeout(() => {
-        console.log("Updated tickets state in AdminDashboard:", tickets);
-      }, 1000);
     });
 
-    return () => {
-      newSocket.disconnect(); // Cleanup on unmount
-      console.log("WebSocket disconnected in AdminDashboard");
-    };
-  }, []);
+    // Fetch tickets
+    fetchTickets();
 
-  // Fetch tickets on component mount
-  useEffect(() => {
-    fetchTickets(); // Call fetchTickets when the component mounts
+    // Cleanup on unmount
+    return () => {
+      socket.disconnect();
+      console.log("WebSocket disconnected");
+    };
   }, []);
 
   // Get all tickets
@@ -148,14 +151,12 @@ function AdminDashboard() {
 
   return (
     <div>
-      {/* Logout Button */}
-      <button onClick={handleLogout} className="logoutButton">
-        Logout
-      </button>
-
-      {/* Header */}
       <header className="dashboardHeader">
-        <h3>Admin Dashboard</h3>
+        <div className="headerLeft">Welcome, {username || "[Username]"}</div>
+        <h3 className="headerCenter">Admin Dashboard</h3>
+        <button className="logoutButton" onClick={handleLogout}>
+          Logout
+        </button>
       </header>
       <hr className="divider" />
 

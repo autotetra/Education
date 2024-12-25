@@ -4,13 +4,18 @@ import endpoints from "../../api/endpoints";
 import axios from "axios";
 import io from "socket.io-client";
 
+const handleLogout = () => {
+  localStorage.clear();
+  window.location.href = "/";
+};
+
 function UserDashboard() {
   const [tickets, setTickets] = useState([]);
   const [selectedTicket, setSelectedTicket] = useState(null);
   const [username, setUsername] = useState("");
 
   useEffect(() => {
-    // Get username name
+    // Get username
     const username = localStorage.getItem("username");
     setUsername(username);
 
@@ -29,11 +34,18 @@ function UserDashboard() {
         return;
       }
 
-      // Update tickets in state
+      // Update tickets list
       setTickets((prevTickets) =>
         prevTickets.map((ticket) =>
           ticket._id === updatedTicket._id ? updatedTicket : ticket
         )
+      );
+
+      // Update the selected ticket if it matches the updated ticket
+      setSelectedTicket((prevSelected) =>
+        prevSelected && prevSelected._id === updatedTicket._id
+          ? updatedTicket
+          : prevSelected
       );
     });
 
@@ -46,11 +58,6 @@ function UserDashboard() {
       console.log("WebSocket disconnected");
     };
   }, []); // Runs only once on component mount
-
-  const handleLogout = () => {
-    localStorage.clear();
-    window.location.href = "/";
-  };
 
   const fetchTickets = async () => {
     try {
