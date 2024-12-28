@@ -26,6 +26,13 @@ router.post("/create", authenticateJWT, async (req, res) => {
     const messageData = JSON.stringify(ticketData);
     await sendMessage("new-ticket", messageData);
 
+    // Emit "ticket-created" event
+    const io = req.app.get("io");
+    if (io) {
+      io.emit("ticket-created", ticketData);
+      console.log("Emitting ticket-created event:", ticketData);
+    }
+
     return res.status(201).json(ticketData);
   } catch (error) {
     if (error.message.includes("Kafka")) {
@@ -104,9 +111,10 @@ router.put("/:id", authenticateJWT, async (req, res) => {
       return res.status(404).json({ message: "Ticket not found" });
     }
 
+    // Emit "statusUpdated" event
     const io = req.app.get("io");
     if (io) {
-      io.emit("statusUpdated", updatedTicket); // Broadcast the update
+      io.emit("status-updated", updatedTicket); // Broadcast the update
     }
 
     res.status(200).json({

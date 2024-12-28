@@ -30,6 +30,7 @@ const app = express();
 const server = http.createServer(app);
 
 const io = initializeWebSocket(server);
+app.set("io", io);
 
 // Middlewares
 

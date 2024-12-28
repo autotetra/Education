@@ -16,6 +16,7 @@ function AdminDashboard() {
   const [username, setUsername] = useState("");
 
   useEffect(() => {
+    console.log("Admin Dashboard useEffect triggered");
     // Get username
     const username = localStorage.getItem("username");
     setUsername(username);
@@ -29,8 +30,14 @@ function AdminDashboard() {
       console.log("WebSocket connected with ID:", socket.id);
     });
 
+    // Handle ticket-created event
+    socket.on("ticket-created", () => {
+      console.log("New ticket created. Refetching tickets...");
+      fetchTickets();
+    });
+
     // Listen for the "statusUpdated" event
-    socket.on("statusUpdated", (updatedTicket) => {
+    socket.on("status-updated", (updatedTicket) => {
       if (!updatedTicket) {
         console.error("No data received for statusUpdated event");
         return;
@@ -57,7 +64,7 @@ function AdminDashboard() {
     // Cleanup on unmount
     return () => {
       socket.disconnect();
-      console.log("WebSocket disconnected");
+      console.log("WebSocket cleanup for Admin Dashboard");
     };
   }, []);
 
@@ -142,7 +149,7 @@ function AdminDashboard() {
         throw new Error("Failed to update Ticket.");
       }
 
-      socket.emit("statusUpdated", response.data.updatedTicket);
+      socket.emit("status-updated", response.data.updatedTicket);
     } catch (error) {
       console.error("Error updating ticket:", error.message);
       alert("Failed to update Ticket");

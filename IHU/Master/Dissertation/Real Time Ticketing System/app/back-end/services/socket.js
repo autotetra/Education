@@ -14,18 +14,19 @@ export const initializeWebSocket = (server) => {
   io.on("connection", (socket) => {
     console.log("User connected:", socket.id);
 
-    // Handle "statusUpdated" event and log it
-    socket.on("statusUpdated", (updatedTicket) => {
+    // Handle "status-updated" event and log it
+    socket.on("status-updated", (updatedTicket) => {
       console.log(
         `Event "statusUpdated" emitted to all clients:`,
         updatedTicket
       );
-      io.emit("statusUpdated", updatedTicket); // Send event to all clients
+      io.emit("status-updated", updatedTicket); // Send event to all clients
     });
 
-    socket.on("message", (msg) => {
-      console.log("Message received:", msg);
-      io.emit("message", msg); // Send message to all clients
+    // Handle "ticket-created"
+    socket.on("ticket-created", (newTicket) => {
+      console.log("Event 'ticket-created' emitted to all clients:", newTicket);
+      io.emit("ticket-created", newTicket);
     });
 
     socket.on("disconnect", () => {

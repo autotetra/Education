@@ -15,6 +15,7 @@ function AgentDashboard() {
   const [username, setUsername] = useState("");
 
   useEffect(() => {
+    console.log("Agent Dashboard useEffect triggered");
     // Get username
     const username = localStorage.getItem("username");
     setUsername(username);
@@ -28,8 +29,14 @@ function AgentDashboard() {
       console.log("WebSocket connected with ID:", socket.id);
     });
 
+    // Handle ticket-created event
+    socket.on("ticket-created", () => {
+      console.log("New ticket created. Refetching tickets...");
+      fetchTickets();
+    });
+
     // Listen for the "statusUpdated" event
-    socket.on("statusUpdated", (updatedTicket) => {
+    socket.on("status-updated", (updatedTicket) => {
       if (!updatedTicket) {
         console.error("No data received for statusUpdated event");
         return;
@@ -56,7 +63,7 @@ function AgentDashboard() {
     // Cleanup function
     return () => {
       socket.disconnect();
-      console.log("WebSocket disconnected");
+      console.log("WebSocket cleanup for User Dashboard");
     };
   }, []);
 
@@ -98,10 +105,10 @@ function AgentDashboard() {
         // Emit the WebSocket event
         const updatedTicket = response.data.updatedTicket;
         console.log(
-          "Emitting statusUpdated event for:",
+          "Emitting status-updated event for:",
           response.data.updatedTicket
         );
-        socket.emit("statusUpdated", updatedTicket);
+        socket.emit("status-updated", updatedTicket);
 
         // Update the UI with the updated ticket
         setTickets((prevTickets) =>

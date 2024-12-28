@@ -29,11 +29,6 @@ function CreateTicket({ onTicketCreated }) {
       setTitle("");
       setDescription("");
       setCategory("");
-
-      // Notify parent component if needed
-      if (onTicketCreated) {
-        onTicketCreated("Ticket created successfully!");
-      }
     } catch (error) {
       console.error("Error creating ticket:", error.message);
       alert("Failed to create ticket. Please try again.");

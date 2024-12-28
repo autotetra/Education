@@ -16,20 +16,21 @@ function UserDashboard() {
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
-    // Get username
+    console.log("User Dashboard useEffect triggered");
+    // Get username once
     const username = localStorage.getItem("username");
     setUsername(username);
 
-    // Initialize WebSocket connection
-    const socket = io("http://localhost:8000");
-    setSocket(socket);
+    // Fetch tickets once on mount
+    fetchTickets();
 
-    // Log connection ID when WebSocket connects
+    // Initialize WebSocket connection
+    const socket = io("http://localhost:8000", { autoConnect: false });
+    socket.connect();
+    setSocket(socket);
+    // Log WebSocket connection
     socket.on("connect", () => {
       console.log("WebSocket connected with ID:", socket.id);
-
-      // Fetch tickets on component mount
-      fetchTickets();
     });
 
     // Handle WebSocket error
@@ -42,27 +43,19 @@ function UserDashboard() {
       console.warn("WebSocket disconnected:", reason);
     });
 
-    // Listen for "ticketCreated" event
-    socket.on("ticketCreated", (newTicket) => {
-      //Update the tickets list dynamically
-      setTickets((prevTickets) => [newTicket, ...prevTickets]);
+    // Handle ticket-created event
+    socket.on("ticket-created", () => {
+      console.log("New ticket created. Refetching tickets...");
+      fetchTickets();
     });
 
-    // Listen for the "statusUpdated" event
-    socket.on("statusUpdated", (updatedTicket) => {
-      if (!updatedTicket) {
-        console.error("No data received for statusUpdated event");
-        return;
-      }
-
-      // Update tickets list
+    // Handle ticket-updated event
+    socket.on("status-updated", (updatedTicket) => {
       setTickets((prevTickets) =>
         prevTickets.map((ticket) =>
           ticket._id === updatedTicket._id ? updatedTicket : ticket
         )
       );
-
-      // Update the selected ticket if it matches the updated ticket
       setSelectedTicket((prevSelected) =>
         prevSelected && prevSelected._id === updatedTicket._id
           ? updatedTicket
@@ -70,31 +63,24 @@ function UserDashboard() {
       );
     });
 
-    // Cleanup function to disconnect the socket
+    // Cleanup
     return () => {
-      socket.off("ticketCreated");
-      socket.off("statusUpdated");
-      socket.off("error");
-      socket.off("disconnect");
       socket.disconnect();
-      console.log("WebSocket disconnected");
+      console.log("WebSocket cleanup for User Dashboard");
     };
   }, []);
 
   const fetchTickets = async () => {
     try {
-      console.log("Fetching tickets..."); // Log when fetchTickets is called
+      console.log("Fetching tickets...");
       const token = localStorage.getItem("token");
       const response = await axios.get(endpoints.GET_TICKETS, {
         headers: { Authorization: `Bearer ${token}` },
       });
-
       const uniqueTickets = response.data.filter(
         (ticket, index, self) =>
           index === self.findIndex((t) => t._id === ticket._id)
       );
-
-      console.log("Fetched Unique Tickets from API:", uniqueTickets); // Log the tickets fetched
       setTickets(uniqueTickets);
     } catch (error) {
       console.error("Error fetching tickets:", error.message);
@@ -139,26 +125,20 @@ function UserDashboard() {
           <h3 className="sectionHeader">My Tickets</h3>
           {tickets.length > 0 ? (
             <ul className="ticketList">
-              {tickets.map((ticket, index) => {
-                // Log for each ticket rendered
-                console.log(
-                  `Rendering ticket with ID: ${ticket._id} at index: ${index}`
-                );
-                return (
-                  <React.Fragment key={ticket._id}>
-                    <li className="ticketItem">
-                      <strong>Title:</strong> {ticket.title} <br />
-                      <strong>Status:</strong> {ticket.status} <br />
-                      <button onClick={() => fetchTicketDetails(ticket._id)}>
-                        View Details
-                      </button>
-                    </li>
-                    {index !== tickets.length - 1 && (
-                      <hr className="ticketItemDivider" />
-                    )}
-                  </React.Fragment>
-                );
-              })}
+              {tickets.map((ticket, index) => (
+                <React.Fragment key={ticket._id}>
+                  <li className="ticketItem">
+                    <strong>Title:</strong> {ticket.title} <br />
+                    <strong>Status:</strong> {ticket.status} <br />
+                    <button onClick={() => fetchTicketDetails(ticket._id)}>
+                      View Details
+                    </button>
+                  </li>
+                  {index !== tickets.length - 1 && (
+                    <hr className="ticketItemDivider" />
+                  )}
+                </React.Fragment>
+              ))}
             </ul>
           ) : (
             <p>No tickets found.</p>
