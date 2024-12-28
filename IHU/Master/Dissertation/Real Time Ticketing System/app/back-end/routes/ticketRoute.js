@@ -130,13 +130,26 @@ router.put("/:id", authenticateJWT, async (req, res) => {
 // Delete ticket
 router.delete("/:id", async (req, res) => {
   try {
+    // Extract the ticket ID
+    const ticketId = req.params.id;
+
+    // Find and delete the ticket
     const ticketToDelete = await Ticket.findByIdAndDelete(req.params.id);
+
+    // Check if exist
     if (!ticketToDelete)
       return res.status(404).json({ message: "Ticket not found" });
+
+    // Emit the "ticket-delete" event
+    const io = req.app.get("io");
+    if (io) {
+      io.emit("ticket-deleted", { ticketId });
+    }
+
     res.status(200).json("Ticket deleted successfully");
   } catch (err) {
     console.error("Error deleting ticket:", err.message);
-    res.status(500).json({ message: "Failed to delete ticket" });
+    res.status(500).json({ message: "Internal Server Error" });
   }
 });
 

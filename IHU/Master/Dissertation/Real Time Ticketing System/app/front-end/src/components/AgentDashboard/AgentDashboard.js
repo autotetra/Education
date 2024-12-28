@@ -57,6 +57,14 @@ function AgentDashboard() {
       );
     });
 
+    // Handle "deleted-ticket" event
+    socket.on("ticket-deleted", ({ ticketId }) => {
+      console.log(`Ticket deleted with ID: ${ticketId}`); // Debugging
+      setTickets((prevTickets) =>
+        prevTickets.filter((ticket) => ticket._id !== ticketId)
+      );
+    });
+
     // Fetch tickets on mount
     fetchTickets();
 

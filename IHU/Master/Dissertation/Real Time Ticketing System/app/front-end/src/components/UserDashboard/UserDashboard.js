@@ -43,13 +43,13 @@ function UserDashboard() {
       console.warn("WebSocket disconnected:", reason);
     });
 
-    // Handle ticket-created event
+    // Handle "ticket-created" event
     socket.on("ticket-created", () => {
       console.log("New ticket created. Refetching tickets...");
       fetchTickets();
     });
 
-    // Handle ticket-updated event
+    // Handle "ticket-updated" event
     socket.on("status-updated", (updatedTicket) => {
       setTickets((prevTickets) =>
         prevTickets.map((ticket) =>
@@ -60,6 +60,14 @@ function UserDashboard() {
         prevSelected && prevSelected._id === updatedTicket._id
           ? updatedTicket
           : prevSelected
+      );
+    });
+
+    // Handle "ticket-deleted" event
+    socket.on("ticket-deleted", ({ ticketId }) => {
+      console.log(`Ticket deleted with ID: ${ticketId}`); // Debugging
+      setTickets((prevTickets) =>
+        prevTickets.filter((ticket) => ticket._id !== ticketId)
       );
     });
 
