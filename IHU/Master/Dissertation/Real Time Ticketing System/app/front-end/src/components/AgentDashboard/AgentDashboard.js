@@ -110,13 +110,7 @@ function AgentDashboard() {
       );
 
       if (response.status === 200) {
-        // Emit the WebSocket event
         const updatedTicket = response.data.updatedTicket;
-        console.log(
-          "Emitting status-updated event for:",
-          response.data.updatedTicket
-        );
-        socket.emit("status-updated", updatedTicket);
 
         // Update the UI with the updated ticket
         setTickets((prevTickets) =>
@@ -124,7 +118,6 @@ function AgentDashboard() {
             ticket._id === updatedTicket._id ? updatedTicket : ticket
           )
         );
-        console.log("Ticket status updated successfully!");
       } else {
         throw new Error("Failed to update ticket.");
       }
