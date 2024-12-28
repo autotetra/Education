@@ -25,6 +25,8 @@ router.post("/create", authenticateJWT, async (req, res) => {
     // Send the new ticket data to Kafka
     const messageData = JSON.stringify(ticketData);
     await sendMessage("new-ticket", messageData);
+
+    return res.status(201).json(ticketData);
   } catch (error) {
     if (error.message.includes("Kafka")) {
       return res

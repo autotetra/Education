@@ -13,6 +13,7 @@ function UserDashboard() {
   const [tickets, setTickets] = useState([]);
   const [selectedTicket, setSelectedTicket] = useState(null);
   const [username, setUsername] = useState("");
+  const [socket, setSocket] = useState(null);
 
   useEffect(() => {
     // Get username
@@ -21,10 +22,30 @@ function UserDashboard() {
 
     // Initialize WebSocket connection
     const socket = io("http://localhost:8000");
+    setSocket(socket);
 
     // Log connection ID when WebSocket connects
     socket.on("connect", () => {
       console.log("WebSocket connected with ID:", socket.id);
+
+      // Fetch tickets on component mount
+      fetchTickets();
+    });
+
+    // Handle WebSocket error
+    socket.on("error", (err) => {
+      console.error("WebSocket error:", err);
+    });
+
+    // Handle WebSocket disconnect
+    socket.on("disconnect", (reason) => {
+      console.warn("WebSocket disconnected:", reason);
+    });
+
+    // Listen for "ticketCreated" event
+    socket.on("ticketCreated", (newTicket) => {
+      //Update the tickets list dynamically
+      setTickets((prevTickets) => [newTicket, ...prevTickets]);
     });
 
     // Listen for the "statusUpdated" event
@@ -49,25 +70,32 @@ function UserDashboard() {
       );
     });
 
-    // Fetch tickets on component mount
-    fetchTickets();
-
     // Cleanup function to disconnect the socket
     return () => {
+      socket.off("ticketCreated");
+      socket.off("statusUpdated");
+      socket.off("error");
+      socket.off("disconnect");
       socket.disconnect();
       console.log("WebSocket disconnected");
     };
-  }, []); // Runs only once on component mount
+  }, []);
 
   const fetchTickets = async () => {
     try {
+      console.log("Fetching tickets..."); // Log when fetchTickets is called
       const token = localStorage.getItem("token");
       const response = await axios.get(endpoints.GET_TICKETS, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
-      setTickets(response.data);
+
+      const uniqueTickets = response.data.filter(
+        (ticket, index, self) =>
+          index === self.findIndex((t) => t._id === ticket._id)
+      );
+
+      console.log("Fetched Unique Tickets from API:", uniqueTickets); // Log the tickets fetched
+      setTickets(uniqueTickets);
     } catch (error) {
       console.error("Error fetching tickets:", error.message);
     }
@@ -100,7 +128,7 @@ function UserDashboard() {
 
       {/* Create Ticket Section */}
       <div className="createTicketSection">
-        <CreateTicket />
+        <CreateTicket socket={socket} />
       </div>
       <hr className="divider" />
 
@@ -111,20 +139,26 @@ function UserDashboard() {
           <h3 className="sectionHeader">My Tickets</h3>
           {tickets.length > 0 ? (
             <ul className="ticketList">
-              {tickets.map((ticket, index) => (
-                <React.Fragment key={ticket._id}>
-                  <li className="ticketItem">
-                    <strong>Title:</strong> {ticket.title} <br />
-                    <strong>Status:</strong> {ticket.status} <br />
-                    <button onClick={() => fetchTicketDetails(ticket._id)}>
-                      View Details
-                    </button>
-                  </li>
-                  {index !== tickets.length - 1 && (
-                    <hr className="ticketItemDivider" />
-                  )}
-                </React.Fragment>
-              ))}
+              {tickets.map((ticket, index) => {
+                // Log for each ticket rendered
+                console.log(
+                  `Rendering ticket with ID: ${ticket._id} at index: ${index}`
+                );
+                return (
+                  <React.Fragment key={ticket._id}>
+                    <li className="ticketItem">
+                      <strong>Title:</strong> {ticket.title} <br />
+                      <strong>Status:</strong> {ticket.status} <br />
+                      <button onClick={() => fetchTicketDetails(ticket._id)}>
+                        View Details
+                      </button>
+                    </li>
+                    {index !== tickets.length - 1 && (
+                      <hr className="ticketItemDivider" />
+                    )}
+                  </React.Fragment>
+                );
+              })}
             </ul>
           ) : (
             <p>No tickets found.</p>
