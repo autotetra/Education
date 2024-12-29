@@ -11,31 +11,40 @@ const handleLogout = () => {
 function AgentDashboard() {
   const [tickets, setTickets] = useState([]);
   const [selectedTicket, setSelectedTicket] = useState(null);
-  const [socket, setSocket] = useState(null);
   const [username, setUsername] = useState("");
 
   useEffect(() => {
-    console.log("Agent Dashboard useEffect triggered");
     // Get username
     const username = localStorage.getItem("username");
     setUsername(username);
 
     // Initialize WebSocket connection
     const socket = io("http://localhost:8000");
-    setSocket(socket);
+
+    // Fetch tickets
+    fetchTickets();
 
     // Log connection ID when WebSocket connects
     socket.on("connect", () => {
       console.log("WebSocket connected with ID:", socket.id);
     });
 
-    // Handle ticket-created event
+    // Handle WebSocket error
+    socket.on("error", (err) => {
+      console.error("WebSocket error:", err);
+    });
+
+    // Handle WebSocket disconnect
+    socket.on("disconnect", (reason) => {
+      console.warn("WebSocket disconnected:", reason);
+    });
+
+    // Listen to "ticket-created" event
     socket.on("ticket-created", () => {
-      console.log("New ticket created. Refetching tickets...");
       fetchTickets();
     });
 
-    // Listen for the "statusUpdated" event
+    // Listen to "status-updated" event
     socket.on("status-updated", (updatedTicket) => {
       if (!updatedTicket) {
         console.error("No data received for statusUpdated event");
@@ -59,23 +68,18 @@ function AgentDashboard() {
 
     // Handle "deleted-ticket" event
     socket.on("ticket-deleted", ({ ticketId }) => {
-      console.log(`Ticket deleted with ID: ${ticketId}`); // Debugging
       setTickets((prevTickets) =>
         prevTickets.filter((ticket) => ticket._id !== ticketId)
       );
     });
 
-    // Fetch tickets on mount
-    fetchTickets();
-
     // Cleanup function
     return () => {
       socket.disconnect();
-      console.log("WebSocket cleanup for User Dashboard");
     };
   }, []);
 
-  // Fetch all tickets assigned to the agent
+  // Fetch agent tickets
   const fetchTickets = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -97,8 +101,6 @@ function AgentDashboard() {
   const handleUpdateTicket = async (ticketId, status) => {
     try {
       const token = localStorage.getItem("token");
-
-      // Send the PUT request to update the ticket status
       const response = await axios.put(
         endpoints.UPDATE_TICKET(ticketId),
         { status },
@@ -111,8 +113,6 @@ function AgentDashboard() {
 
       if (response.status === 200) {
         const updatedTicket = response.data.updatedTicket;
-
-        // Update the UI with the updated ticket
         setTickets((prevTickets) =>
           prevTickets.map((ticket) =>
             ticket._id === updatedTicket._id ? updatedTicket : ticket
@@ -126,6 +126,7 @@ function AgentDashboard() {
     }
   };
 
+  // Get ticket details
   const fetchTicketDetails = async (ticketId) => {
     try {
       const token = localStorage.getItem("token");

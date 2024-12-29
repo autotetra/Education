@@ -3,44 +3,72 @@
 /* Vertical Container for Login and Register */
 .verticalContainer {
   display: flex;
-  flex-direction: column; /* Stack children vertically */
-  align-items: center; /* Center horizontally */
-  gap: 30px; /* Space between Login and Register forms */
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
 }
 
 /* Login και Register Containers */
 .loginContainer,
 .registerContainer {
-  flex: 0 0 30%; /* Κάθε component παίρνει το 30% του χώρου */
-  text-align: center; /* Κεντράρισμα του περιεχομένου */
+  flex: 0 0 30%;
+  text-align: center;
 }
 
 /* Align Login Form */
 .loginForm {
   display: flex;
-  flex-direction: column; /* Κάθετη διάταξη */
-  align-items: flex-start; /* Στοίχιση προς τα αριστερά */
-  gap: 15px; /* Κοινό κενό μεταξύ των στοιχείων */
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 15px;
 }
 
 .formGroupLogin {
   display: flex;
-  align-items: center; /* Στοίχιση των labels και των inputs */
-  justify-content: flex-start; /* Ξεκινάνε από αριστερά */
+  align-items: center;
+  justify-content: flex-start;
 }
 
 .loginLabel {
-  width: 100px; /* Σταθερό πλάτος για τα labels ώστε να είναι ευθυγραμμισμένα */
-  text-align: left; /* Τα labels παραμένουν αριστερά */
+  width: 100px;
+  text-align: left;
 }
 
 .loginInput {
-  flex: 1; /* Τα inputs παίρνουν το υπόλοιπο διαθέσιμο πλάτος */
+  flex: 1;
 }
 
 .loginButton {
-  align-self: flex-end; /* Το κουμπί στοιχίζεται δεξιά */
-  margin-top: 10px; /* Προσθέτουμε ένα κενό πάνω από το button */
+  align-self: flex-end;
+  margin-top: 10px;
+}
+
+/* Align Register Form */
+.registerForm {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 15px;
+}
+
+.formGroupRegister {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.registerLabel {
+  width: 100px;
+  text-align: left;
+}
+
+.registerInput {
+  flex: 1;
+}
+
+.registerButton {
+  align-self: flex-end;
+  margin-top: 10px;
 }
 
 /* Dashboards Header */
@@ -67,40 +95,7 @@
 }
 
 .logoutButton {
-  justify-self: end; /* Align button to the right */
-}
-/* Align Register Form */
-.registerForm {
-  display: flex;
-  flex-direction: column; /* Κάθετη διάταξη */
-  align-items: flex-start; /* Στοίχιση προς τα αριστερά */
-  gap: 15px; /* Κενό μεταξύ των στοιχείων */
-}
-
-.formGroupRegister {
-  display: flex;
-  align-items: center; /* Στοίχιση των labels και των inputs */
-  justify-content: flex-start; /* Ξεκινάνε από αριστερά */
-}
-
-.registerLabel {
-  width: 100px; /* Σταθερό πλάτος για τα labels ώστε να είναι ευθυγραμμισμένα */
-  text-align: left; /* Τα labels παραμένουν αριστερά */
-}
-
-.registerInput {
-  flex: 1; /* Τα inputs παίρνουν το υπόλοιπο διαθέσιμο πλάτος */
-}
-
-.registerButton {
-  align-self: flex-end; /* Το κουμπί στοιχίζεται δεξιά */
-  margin-top: 10px; /* Προσθέτουμε ένα κενό πάνω από το button */
-}
-
-.registerMessage {
-  margin-top: 10px;
-  color: green; /* Change to red for error messages */
-  font-weight: bold;
+  justify-self: end;
 }
 
 /* ----------Common Code---------- */
@@ -113,10 +108,10 @@ body {
 
 /* Divider Line */
 .divider {
-  margin: 20px auto; /* Center the divider horizontally with vertical spacing */
+  margin: 20px auto;
   border: none;
-  border-top: 1px solid #ccc; /* Light gray color */
-  width: 80%; /* Limit the width to 80% of the container */
+  border-top: 1px solid #ccc;
+  width: 80%;
 }
 
 /* Dashboard Layout */
@@ -150,18 +145,18 @@ body {
 
 .formGroup {
   display: flex;
-  flex-direction: column; /* Stack label and field vertically */
-  margin-bottom: 10px; /* Maintain spacing between fields */
+  flex-direction: column;
+  margin-bottom: 10px;
 }
 
 .formGroup label {
-  margin-bottom: 5px; /* Space between label and input field */
+  margin-bottom: 5px;
 }
 
 /* Limit form width and center it */
 .createTicketForm {
-  width: 33%; /* One-third of the parent container */
-  mmargin-left: 5%;
+  width: 33%;
+  margin-left: 5%;
 }
 
 /* ----------Ticket List Component--------- */
@@ -169,38 +164,38 @@ body {
 /* Tickets List Section */
 .ticketsList {
   flex: 1;
-  margin-left: 3%; /* Restore left margin */
+  margin-left: 3%;
 }
 
 /* General Ticket List */
 .ticketList {
-  list-style: none; /* Remove bullets */
+  list-style: none;
   padding: 0;
   margin: 0;
 }
 
 .ticketItem {
-  margin-bottom: 15px; /* Add space between rows */
+  margin-bottom: 15px;
 }
 
 .ticketItem strong {
-  display: inline-block; /* Align "Title" and "Status" inline */
-  margin-bottom: 5px; /* Small spacing under each title/status row */
+  display: inline-block;
+  margin-bottom: 5px;
 }
 
 .ticketItem select {
-  margin-bottom: 10px; /* Space below dropdown */
+  margin-bottom: 10px;
 }
 
 .ticketItem button {
-  margin-right: 10px; /* Add space between buttons */
-  margin-top: 5px; /* Small top spacing to align buttons better */
+  margin-right: 10px;
+  margin-top: 5px;
 }
 
 /* Ticket Item Divider Line */
 .ticketItemDivider {
-  margin: 20px 0; /* Vertical spacing only */
+  margin: 20px 0;
   border: none;
-  border-top: 1px solid #ccc; /* Light gray color */
-  width: 80%; /* Keep the width at 80% of the container */
+  border-top: 1px solid #ccc;
+  width: 80%;
 }

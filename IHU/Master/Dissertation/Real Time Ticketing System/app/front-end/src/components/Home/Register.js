@@ -17,16 +17,13 @@ function Register() {
         password: password,
       })
       .then((response) => {
-        // Display success message
         alert("Registration successful!");
 
-        // Clear form fields
         setUserName("");
         setEmail("");
         setPassword("");
       })
       .catch((error) => {
-        // Display error alert
         if (error.response && error.response.data.message) {
           alert(`Error: ${error.response.data.message}`);
         } else {

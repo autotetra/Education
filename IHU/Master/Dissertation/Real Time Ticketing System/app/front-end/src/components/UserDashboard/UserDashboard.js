@@ -13,22 +13,19 @@ function UserDashboard() {
   const [tickets, setTickets] = useState([]);
   const [selectedTicket, setSelectedTicket] = useState(null);
   const [username, setUsername] = useState("");
-  const [socket, setSocket] = useState(null);
 
   useEffect(() => {
-    console.log("User Dashboard useEffect triggered");
-    // Get username once
+    // Get username
     const username = localStorage.getItem("username");
     setUsername(username);
 
-    // Fetch tickets once on mount
+    // Initialize WebSocket connection
+    const socket = io("http://localhost:8000");
+
+    // Fetch tickets
     fetchTickets();
 
-    // Initialize WebSocket connection
-    const socket = io("http://localhost:8000", { autoConnect: false });
-    socket.connect();
-    setSocket(socket);
-    // Log WebSocket connection
+    // Log connection ID when WebSocket connects
     socket.on("connect", () => {
       console.log("WebSocket connected with ID:", socket.id);
     });
@@ -43,19 +40,26 @@ function UserDashboard() {
       console.warn("WebSocket disconnected:", reason);
     });
 
-    // Handle "ticket-created" event
+    // Listen to "ticket-created" event
     socket.on("ticket-created", () => {
-      console.log("New ticket created. Refetching tickets...");
       fetchTickets();
     });
 
-    // Handle "ticket-updated" event
+    // Listen to "status-updated" event
     socket.on("status-updated", (updatedTicket) => {
+      if (!updatedTicket) {
+        console.error("No data received for statusUpdated event");
+        return;
+      }
+
+      // Update tickets in list
       setTickets((prevTickets) =>
         prevTickets.map((ticket) =>
           ticket._id === updatedTicket._id ? updatedTicket : ticket
         )
       );
+
+      // Update the selected ticket if it matches the updated ticket
       setSelectedTicket((prevSelected) =>
         prevSelected && prevSelected._id === updatedTicket._id
           ? updatedTicket
@@ -65,7 +69,6 @@ function UserDashboard() {
 
     // Handle "ticket-deleted" event
     socket.on("ticket-deleted", ({ ticketId }) => {
-      console.log(`Ticket deleted with ID: ${ticketId}`); // Debugging
       setTickets((prevTickets) =>
         prevTickets.filter((ticket) => ticket._id !== ticketId)
       );
@@ -74,27 +77,27 @@ function UserDashboard() {
     // Cleanup
     return () => {
       socket.disconnect();
-      console.log("WebSocket cleanup for User Dashboard");
     };
   }, []);
 
+  // Fetch all tickets
   const fetchTickets = async () => {
     try {
-      console.log("Fetching tickets...");
       const token = localStorage.getItem("token");
       const response = await axios.get(endpoints.GET_TICKETS, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      const uniqueTickets = response.data.filter(
+      const tickets = response.data.filter(
         (ticket, index, self) =>
           index === self.findIndex((t) => t._id === ticket._id)
       );
-      setTickets(uniqueTickets);
+      setTickets(tickets);
     } catch (error) {
       console.error("Error fetching tickets:", error.message);
     }
   };
 
+  // Get ticket details
   const fetchTicketDetails = async (ticketId) => {
     try {
       const token = localStorage.getItem("token");
@@ -122,11 +125,11 @@ function UserDashboard() {
 
       {/* Create Ticket Section */}
       <div className="createTicketSection">
-        <CreateTicket socket={socket} />
+        <CreateTicket />
       </div>
       <hr className="divider" />
 
-      {/* Tickets and Details */}
+      {/* Dashboard Content */}
       <div className="dashboardContainer">
         {/* My Tickets Section */}
         <div className="ticketsList">

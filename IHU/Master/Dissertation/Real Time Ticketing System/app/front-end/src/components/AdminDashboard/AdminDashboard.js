@@ -12,38 +12,47 @@ const handleLogout = () => {
 function AdminDashboard() {
   const [tickets, setTickets] = useState([]);
   const [selectedTicket, setSelectedTicket] = useState(null);
-  const [socket, setSocket] = useState(null);
   const [username, setUsername] = useState("");
 
   useEffect(() => {
-    console.log("Admin Dashboard useEffect triggered");
     // Get username
     const username = localStorage.getItem("username");
     setUsername(username);
 
     // Initialize WebSocket connection
-    const socket = io("http://localhost:8000"); // WebSocket server
-    setSocket(socket);
+    const socket = io("http://localhost:8000");
+
+    // Fetch tickets
+    fetchTickets();
 
     // Log connection ID when WebSocket connects
     socket.on("connect", () => {
       console.log("WebSocket connected with ID:", socket.id);
     });
 
-    // Handle ticket-created event
+    // Handle WebSocket error
+    socket.on("error", (err) => {
+      console.error("WebSocket error:", err);
+    });
+
+    // Handle WebSocket disconnect
+    socket.on("disconnect", (reason) => {
+      console.warn("WebSocket disconnected:", reason);
+    });
+
+    // Listen to "ticket-created" event
     socket.on("ticket-created", () => {
-      console.log("New ticket created. Refetching tickets...");
       fetchTickets();
     });
 
-    // Listen for the "statusUpdated" event
+    // Listen to "status-updated" event
     socket.on("status-updated", (updatedTicket) => {
       if (!updatedTicket) {
         console.error("No data received for statusUpdated event");
         return;
       }
 
-      // Update tickets list
+      // Update tickets in list
       setTickets((prevTickets) =>
         prevTickets.map((ticket) =>
           ticket._id === updatedTicket._id ? updatedTicket : ticket
@@ -58,13 +67,9 @@ function AdminDashboard() {
       );
     });
 
-    // Fetch tickets
-    fetchTickets();
-
     // Cleanup on unmount
     return () => {
       socket.disconnect();
-      console.log("WebSocket cleanup for Admin Dashboard");
     };
   }, []);
 
@@ -86,7 +91,7 @@ function AdminDashboard() {
     }
   };
 
-  // Get specific ticket
+  // Get ticket details
   const fetchTicketDetails = async (ticketId) => {
     try {
       const token = localStorage.getItem("token");
@@ -98,6 +103,37 @@ function AdminDashboard() {
       setSelectedTicket(response.data);
     } catch (error) {
       console.error("Error fetching ticket details:", error.message);
+    }
+  };
+
+  // Update Ticket
+  const handleUpdateTicket = async (ticketId, status) => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const response = await axios.put(
+        endpoints.UPDATE_TICKET(ticketId),
+        { status },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        const updatedTicket = response.data.updatedTicket;
+        setTickets((prevTickets) =>
+          prevTickets.map((ticket) =>
+            ticket._id === updatedTicket._id ? updatedTicket : ticket
+          )
+        );
+      } else {
+        throw new Error("Failed to update Ticket.");
+      }
+    } catch (error) {
+      console.error("Error updating ticket:", error.message);
+      alert("Failed to update Ticket");
     }
   };
 
@@ -124,38 +160,6 @@ function AdminDashboard() {
     }
   };
 
-  const handleUpdateTicket = async (ticketId, status) => {
-    try {
-      const token = localStorage.getItem("token");
-
-      const response = await axios.put(
-        endpoints.UPDATE_TICKET(ticketId),
-        { status },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (response.status === 200) {
-        const updatedTicket = response.data.updatedTicket;
-        setTickets((prevTickets) =>
-          prevTickets.map((ticket) =>
-            ticket._id === updatedTicket._id ? updatedTicket : ticket
-          )
-        );
-      } else {
-        throw new Error("Failed to update Ticket.");
-      }
-
-      socket.emit("status-updated", response.data.updatedTicket);
-    } catch (error) {
-      console.error("Error updating ticket:", error.message);
-      alert("Failed to update Ticket");
-    }
-  };
-
   return (
     <div>
       <header className="dashboardHeader">
@@ -173,7 +177,7 @@ function AdminDashboard() {
       </div>
       <hr className="divider" />
 
-      {/* Tickets and Details */}
+      {/* Dashboard Content */}
       <div className="dashboardContainer">
         {/* Ticket List Section */}
         <div className="ticketsList">
@@ -205,7 +209,7 @@ function AdminDashboard() {
                     </button>
                   </li>
                   {index !== tickets.length - 1 && (
-                    <hr className="ticketItemDivider" /> /* Add divider after each ticket */
+                    <hr className="ticketItemDivider" />
                   )}
                 </React.Fragment>
               ))

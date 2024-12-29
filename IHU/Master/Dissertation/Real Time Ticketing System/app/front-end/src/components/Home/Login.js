@@ -16,6 +16,7 @@ function Login() {
     }
   }, []);
 
+  // Account login
   const handleLogin = (e) => {
     e.preventDefault();
     axios
@@ -24,7 +25,6 @@ function Login() {
         password: password,
       })
       .then((response) => {
-        console.log("Login successful:", response.data);
         const { token, account } = response.data;
         localStorage.setItem("token", token);
         localStorage.setItem("role", account.role);
