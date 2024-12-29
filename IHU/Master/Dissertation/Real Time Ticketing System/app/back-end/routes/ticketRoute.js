@@ -78,7 +78,7 @@ router.get("/:id", async (req, res) => {
     const ticket = await Ticket.findById(req.params.id).populate(
       "createdBy",
       "username"
-    ); // Populate createdBy field with username
+    );
     if (!ticket) {
       return res.status(404).json({ message: "Ticket not found" });
     }
@@ -130,13 +130,9 @@ router.put("/:id", authenticateJWT, async (req, res) => {
 // Delete ticket
 router.delete("/:id", async (req, res) => {
   try {
-    // Extract the ticket ID
     const ticketId = req.params.id;
-
-    // Find and delete the ticket
     const ticketToDelete = await Ticket.findByIdAndDelete(req.params.id);
 
-    // Check if exist
     if (!ticketToDelete)
       return res.status(404).json({ message: "Ticket not found" });
 
