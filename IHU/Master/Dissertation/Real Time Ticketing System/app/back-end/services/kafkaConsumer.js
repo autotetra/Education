@@ -7,7 +7,7 @@ const kafka = new Kafka({
   brokers: ["localhost:9092"],
 });
 
-// Set up the consumer
+// Set up the consumer Group (can be used for more than one consumer)
 const consumer = kafka.consumer({ groupId: "ticketing-consumers" });
 
 // Connect the consumer

@@ -17,7 +17,7 @@ dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// MongoDB Connection
+// MongoDB connection
 mongoose
   .connect(process.env.MONGODB_URI)
   .then(() => console.log("Connected to MongoDB"))
@@ -29,13 +29,15 @@ const app = express();
 // Create an HTTP server
 const server = http.createServer(app);
 
+// Initialize WebSocket connection
 const io = initializeWebSocket(server);
 app.set("io", io);
 
-// Middlewares
+// Middlewares --->
 
 // Global JSON parsing middleware
 app.use(express.json());
+
 // For form data
 app.use(express.urlencoded({ extended: false }));
 

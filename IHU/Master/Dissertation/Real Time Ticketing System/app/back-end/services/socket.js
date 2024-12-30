@@ -11,24 +11,26 @@ export const initializeWebSocket = (server) => {
     },
   });
 
+  // Socket connection
   io.on("connection", (socket) => {
     console.log("User connected:", socket.id);
 
-    // Handle "status-updated" event and log it
-    socket.on("status-updated", (updatedTicket) => {
-      console.log(
-        `Event "statusUpdated" emitted to all clients:`,
-        updatedTicket
-      );
-      io.emit("status-updated", updatedTicket); // Send event to all clients
-    });
-
-    // Handle "ticket-created"
+    // Listen to "ticket-created" event
     socket.on("ticket-created", (newTicket) => {
       console.log("Event 'ticket-created' emitted to all clients:", newTicket);
       io.emit("ticket-created", newTicket);
     });
 
+    // Listen to "status-updated" event
+    socket.on("status-updated", (updatedTicket) => {
+      console.log(
+        `Event "statusUpdated" emitted to all clients:`,
+        updatedTicket
+      );
+      io.emit("status-updated", updatedTicket);
+    });
+
+    // Socket disconnection
     socket.on("disconnect", () => {
       console.log("User disconnected:", socket.id);
     });
