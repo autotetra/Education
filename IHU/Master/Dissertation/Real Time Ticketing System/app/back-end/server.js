@@ -42,6 +42,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 // Middleware for Cross-Origin Resource Sharing
+//(CORS middleware is already applied in socket.js, included here for redundancy and debugging ease)
 app.use(
   cors({
     origin: "http://localhost:3000",

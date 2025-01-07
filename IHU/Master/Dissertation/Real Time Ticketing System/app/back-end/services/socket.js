@@ -30,6 +30,12 @@ export const initializeWebSocket = (server) => {
       io.emit("status-updated", updatedTicket);
     });
 
+    // Listen to "ticket-deleted" event
+    socket.on("ticket-deleted", ({ ticketId }) => {
+      console.log(`Event "ticket-deleted" emitted to all clients:`, ticketId);
+      io.emit("ticket-deleted", { ticketId });
+    });
+
     // Socket disconnection
     socket.on("disconnect", () => {
       console.log("User disconnected:", socket.id);
